@@ -1,0 +1,7 @@
+.gradle
+.idea
+build
+*/build
+/idea-plugin/build/
+/compiler-plugin/build/
+/prelude/build/
