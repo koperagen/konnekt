@@ -1,6 +1,6 @@
 plugins {
     id("org.jetbrains.intellij") version "0.4.21"
-    kotlin("jvm") version "1.3.61"
+    kotlin("jvm")
 }
 
 group = "org.example"
@@ -9,17 +9,17 @@ version = "1.0-SNAPSHOT"
 val KOTLIN_IDEA_VERSION: String by project
 
 repositories {
-    mavenLocal()
+//    mavenLocal()
     mavenCentral()
-//    maven(url = "https://dl.bintray.com/celtric/maven")
-//    maven(url = "https://oss.jfrog.org/artifactory/oss-snapshot-local/")
+    maven(url = "https://dl.bintray.com/celtric/maven")
+    maven(url = "https://oss.jfrog.org/artifactory/oss-snapshot-local/")
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     api(project(":compiler-plugin"))
-    api("io.arrow-kt:idea-plugin:1.3.61-SNAPSHOT")
-    api("io.arrow-kt:compiler-plugin:1.3.61-SNAPSHOT")
+    api("io.arrow-kt:idea-plugin:1.4.10-SNAPSHOT")
+    api("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
