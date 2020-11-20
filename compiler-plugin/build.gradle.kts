@@ -39,16 +39,19 @@ dependencies {
 
   testImplementation("io.kotest:kotest-framework-api:4.3.1")
   testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.1")
+
   testImplementation("io.ktor:ktor-client-mock:$ktor_version")
   testImplementation("io.ktor:ktor-client-mock-jvm:$ktor_version")
+
   testRuntimeOnly("io.arrow-kt:arrow-meta-prelude:1.4.10-SNAPSHOT")
+
   testRuntimeOnly("io.ktor:ktor-client-core:$ktor_version")
   testRuntimeOnly("io.ktor:ktor-http:$ktor_version")
   testRuntimeOnly("io.ktor:ktor-client-core-jvm:$ktor_version")
   testRuntimeOnly("io.ktor:ktor-client-cio:$ktor_version")
   testRuntimeOnly("io.ktor:ktor-client-json-jvm:$ktor_version")
   testRuntimeOnly("io.ktor:ktor-client-logging-jvm:$ktor_version")
-  testRuntimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.1")
+  testRuntimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6")
 }
 
 //kotlin {
@@ -75,6 +78,6 @@ dependencies {
 //
 //}
 
-//tasks.withType<Test> {
-//  useJUnitPlatform()
-//}
+tasks.withType<Test> {
+  useJUnitPlatform()
+}
