@@ -5,3 +5,4 @@ build
 /idea-plugin/build/
 /compiler-plugin/build/
 /prelude/build/
+/idea-plugin/build/*
