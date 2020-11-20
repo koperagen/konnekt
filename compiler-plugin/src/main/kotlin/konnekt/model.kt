@@ -4,6 +4,7 @@ import arrow.meta.phases.analysis.ElementScope
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.addRemoveModifier.addModifier
+import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 import substituteParams
 
 data class Method(
@@ -13,6 +14,25 @@ data class Method(
     val encoding: MimeEncoding? = null,
     val params: List<Parameter>,
     val returnType: Type
+)
+
+data class Method1(
+    val name: String,
+    val specification: RequestSpecification,
+    val returnType: Type
+)
+
+data class Parameter1(
+    val annotations: List<SourceAnnotation>,
+    val name: String,
+    val type: Type
+)
+
+data class RequestSpecification(
+    val httpVerb: VerbAnnotation,
+    val headers: List<HeaderAnnotation>,
+    val parameters: List<Parameter1>,
+    val encoding: MimeEncoding?
 )
 
 data class VerbAnnotation(val verb: String, val path: HttpPath) {
@@ -47,13 +67,19 @@ data class Parameter(
     val type: Type
 )
 
-class TypedParameter<A: SourceAnnotation>(val annotation: A, val name: String, val type: Type)
+data class TypedParameter<A: SourceAnnotation>(val annotation: A, val name: String, val type: Type)
 
-sealed class UrlPart
+typealias BodyParameter = TypedParameter<Body>
 
-object Constant: UrlPart()
+typealias QueryParameter = TypedParameter<Query>
 
-data class Placeholder(var value: String = "") : UrlPart()
+typealias PartParameter = TypedParameter<Part>
+
+typealias FieldParameter = TypedParameter<Field>
+
+typealias PathParameter = TypedParameter<Path>
+
+typealias HeaderParameter = TypedParameter<Header>
 
 typealias Type = String
 
@@ -82,11 +108,9 @@ object Header : SourceAnnotation("Header")
 fun Method.render(): String {
     fun List<Parameter>.render() = joinToString { "${it.name}: ${it.type}" }
 
-    fun renderPath(verbAnnotation: VerbAnnotation, params: List<Parameter>) = substituteParams(verbAnnotation.path, params)
-
     return """
     override suspend fun $name(${params.render()}): $returnType {
-        return client.${httpVerb.verb.toLowerCase()}(path = "${renderPath(httpVerb, params)}") {
+        return client.${httpVerb.verb.toLowerCase()}(path = "${substituteParams(httpVerb.path, params.filterPaths())}") {
             ${params.filterQueries().joinToString("\n") {
                     it.render()
                 }
@@ -100,27 +124,12 @@ fun ElementScope.render(method: Method): NamedFunction = method.render().functio
   addModifier(owner = value, modifier = KtTokens.OVERRIDE_KEYWORD)
 }
 
-fun List<Parameter>.filterQueries() = mapNotNull { parameter ->
+fun List<Parameter>.filterQueries(): List<QueryParameter> = mapNotNull { parameter ->
   (parameter.annotation as? Query)?.let { annotation -> TypedParameter(annotation, parameter.name, parameter.type) }
 }
 
+fun List<Parameter>.filterPaths(): List<PathParameter> = mapNotNull { parameter ->
+    parameter.annotation.safeAs<Path>()?.let { annotation -> TypedParameter(annotation, parameter.name, parameter.type) }
+}
+
 fun TypedParameter<Query>.render() = """parameter("${annotation.key}", $name)"""
-
-//fun Map<String, UrlPart>.substituteParams(pathParams: List<Parameter>): String {
-//    pathParams.forEach { parameter ->
-//        val placeholder = parameter.annotation.safeAs<Path>()?.placeholder ?: return@forEach
-//        get(placeholder)?.safeAs<Placeholder>()?.value = parameter.name
-//        println(parameter.name)
-//    }
-//    println(entries.joinToString { (string, part) -> "string: $string part $part" })
-//    return entries.joinToString("/", "\"/", postfix = "\"") { (key, part) ->
-//        when(part) {
-//            Constant -> key
-//            is Placeholder -> "\${${part.value}}"
-//        }
-//    }
-//}
-
-//fun NamedFunction.implement(): NamedFunction {
-//    `(params)`.map { it.typeReference }
-//}

@@ -213,7 +213,7 @@ fun KtAnnotated.hasAnnotation(
   return annotationEntries.any(predicate)
 }
 
-fun substituteParams(path: String, pathParams: List<Parameter>): String {
+fun substituteParams(path: String, pathParams: List<PathParameter>): String {
   return pathParams.fold(path) { path, param ->
     path.replace("{${param.annotation.name}}", "\${${param.name}}")
   }

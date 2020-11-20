@@ -19,7 +19,7 @@ class CodegenTest : FreeSpec({
 
     "Generate valid path from components" {
       val pathParams = listOf(Parameter(Path("placeholder", false), "placeholder", "String"))
-      substituteParams(path, pathParams) shouldBe "/test/\${placeholder}/"
+      substituteParams(path, pathParams.filterPaths()) shouldBe "/test/\${placeholder}/"
     }
   }
 
