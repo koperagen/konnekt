@@ -228,8 +228,3 @@ enum class Request {
   POST,
   PUT
 }
-
-fun generateGet(path: String, pathParams: List<Parameter>): String {
-  val pathExpression = substituteParams(path, pathParams)
-  return """client.get("$pathExpression")"""
-}

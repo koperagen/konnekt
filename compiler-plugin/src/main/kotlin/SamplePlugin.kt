@@ -4,7 +4,6 @@ import arrow.meta.MetaPlugin
 import arrow.meta.invoke
 import arrow.meta.phases.CompilerContext
 import arrow.meta.quotes.Transform
-import arrow.meta.quotes.binaryExpression
 import arrow.meta.quotes.classDeclaration
 import kotlin.contracts.ExperimentalContracts
 
