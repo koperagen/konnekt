@@ -1,0 +1,32 @@
+@startuml
+|IDE|
+start
+:Открытие проекта;
+-[#darkred]-> Скрипт сборки;
+|Gradle|
+:Синхронизация;
+-[#darkred]-> Проект;
+fork
+#palegreen:Настройка компилятора;
+forkagain
+#palegreen:Настройка IDE;
+endfork
+|IDE|
+-[#darkred]-> Среда выполнения;
+#palegreen:Анализ кода;
+if (Есть ошибки) then (да)
+    :Вывод сообщений;
+    stop
+else (нет)
+    |Gradle|
+    :Сборка проекта;
+    -[#darkred]-> Компилируемые файлы;
+    |Compiler|
+    #palegreen:Анализ;
+    -[#darkred]-> Метаданные;
+    #palegreen:Трансформация;
+    -[#darkred]-> Итоговый код;
+    :Продолжение компиляции;
+    stop
+endif
+@enduml
