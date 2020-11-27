@@ -7,7 +7,7 @@ start
 |Gradle|
 :Синхронизация;
 -[#darkred]-> Проект;
-partition Плагин_Gradle {
+partition Расширение_Gradle {
     fork
     #palegreen:Настройка компилятора;
     forkagain
@@ -16,17 +16,17 @@ partition Плагин_Gradle {
 }
 |IDE|
 -[#darkred]-> Среда выполнения;
-partition Плагин_IDE {
+partition Расширение_IDE {
     #palegreen:Анализ кода;
 }
+-[#darkred]-> Результат анализа;
 if (Есть ошибки) then (да)
-    :Вывод сообщений;
     stop
 else (нет)
     |Gradle|
     :Сборка проекта;
     -[#darkred]-> Компилируемые файлы;
-    partition Плагин_Компилятора {
+    partition Расширение_Компилятора {
         |Compiler|
         #palegreen:Анализ кода;
         -[#darkred]-> Метаданные;
