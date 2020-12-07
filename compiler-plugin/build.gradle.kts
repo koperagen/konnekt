@@ -1,3 +1,5 @@
+import java.nio.file.Paths
+
 plugins {
   kotlin("jvm")
   id("com.github.johnrengelman.shadow") version "5.2.0"
@@ -46,4 +48,14 @@ dependencies {
 
 tasks.withType<Test> {
   useJUnitPlatform()
+}
+
+tasks.withType<Jar> {
+  from(
+      zipTree(sourceSets.main.get().compileClasspath.find {
+        it.absolutePath.contains(Paths.get("arrow-kt", "compiler-plugin").toString())
+      }!!)
+  ) {
+    exclude("META-INF/services/org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar")
+  }
 }

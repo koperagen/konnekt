@@ -5,7 +5,6 @@ import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunct
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.addRemoveModifier.addModifier
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
-import substituteParams
 
 data class Method(
     val name: String,

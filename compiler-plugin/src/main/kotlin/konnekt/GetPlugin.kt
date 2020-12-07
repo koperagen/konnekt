@@ -1,3 +1,5 @@
+package konnekt
+
 import arrow.meta.CliPlugin
 import arrow.meta.Meta
 import arrow.meta.invoke
@@ -5,7 +7,6 @@ import arrow.meta.phases.CompilerContext
 import arrow.meta.quotes.Transform
 import arrow.meta.quotes.classDeclaration
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
-import konnekt.*
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
@@ -129,7 +130,7 @@ fun toVerbAnnotation(annotationEntry: KtAnnotationEntry, verb: String): VerbAnno
       ?.map { it.text.removeSurrounding("\"") }
       ?.singleOrNull()
       ?: error("Expected exactly one argument")
-  println("toVerbAnnotation: $path")
+  println("konnekt.toVerbAnnotation: $path")
   return VerbAnnotation(verb, path)
 }
 
@@ -210,7 +211,7 @@ fun String.toBooleanOrNull(): Boolean? {
   return booleanValues[this]
 }
 
-fun isKonnektClient(ktClass: KtClass): Boolean = ktClass.isInterface() && ktClass.hasAnnotation("client")
+fun isKonnektClient(ktClass: KtClass): Boolean = ktClass.isInterface() && ktClass.hasAnnotation("client", "prelude.client", "konnekt.prelude.client")
 
 fun KtAnnotated.hasAnnotation(
     vararg annotationNames: String
