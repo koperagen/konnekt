@@ -7,31 +7,31 @@ import org.jetbrains.kotlin.psi.addRemoveModifier.addModifier
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 data class Method(
-    val name: String,
-    val httpVerb: VerbAnnotation,
-    val headers: List<HeaderAnnotation>,
-    val encoding: MimeEncoding? = null,
-    val params: List<Parameter>,
-    val returnType: Type
+  val name: String,
+  val httpVerb: VerbAnnotation,
+  val headers: List<HeaderAnnotation>,
+  val encoding: MimeEncoding? = null,
+  val params: List<Parameter>,
+  val returnType: Type
 )
 
 data class Method1(
-    val name: String,
-    val specification: RequestSpecification,
-    val returnType: Type
+  val name: String,
+  val specification: RequestSpecification,
+  val returnType: Type
 )
 
 data class Parameter1(
-    val annotations: List<SourceAnnotation>,
-    val name: String,
-    val type: Type
+  val annotations: List<SourceAnnotation>,
+  val name: String,
+  val type: Type
 )
 
 data class RequestSpecification(
-    val httpVerb: VerbAnnotation,
-    val headers: List<HeaderAnnotation>,
-    val parameters: List<Parameter1>,
-    val encoding: MimeEncoding?
+  val httpVerb: VerbAnnotation,
+  val headers: List<HeaderAnnotation>,
+  val parameters: List<Parameter1>,
+  val encoding: MimeEncoding?
 )
 
 data class VerbAnnotation(val verb: String, val path: HttpPath) {
@@ -57,16 +57,16 @@ data class VerbAnnotation(val verb: String, val path: HttpPath) {
 data class HeaderAnnotation(val headers: List<String>)
 
 enum class MimeEncoding {
-    MULTIPART, FORM_URL_ENCODED
+  MULTIPART, FORM_URL_ENCODED
 }
 
 data class Parameter(
-    val annotation: SourceAnnotation,
-    val name: String,
-    val type: Type
+  val annotation: SourceAnnotation,
+  val name: String,
+  val type: Type
 )
 
-data class TypedParameter<A: SourceAnnotation>(val annotation: A, val name: String, val type: Type)
+data class TypedParameter<A : SourceAnnotation>(val annotation: A, val name: String, val type: Type)
 
 typealias BodyParameter = TypedParameter<Body>
 
@@ -105,15 +105,16 @@ data class Field(val key: String) : SourceAnnotation("Field")
 object Header : SourceAnnotation("Header")
 
 fun Method.render(): String {
-    fun List<Parameter>.render() = joinToString { "${it.name}: ${it.type}" }
+  fun List<Parameter>.render() = joinToString { "${it.name}: ${it.type}" }
 
-    return """
+  return """
     override suspend fun $name(${params.render()}): $returnType {
         return client.${httpVerb.verb.toLowerCase()}(path = "${substituteParams(httpVerb.path, params.filterPaths())}") {
-            ${params.filterQueries().joinToString("\n") {
-                    it.render()
-                }
-            }
+            ${
+    params.filterQueries().joinToString("\n") {
+      it.render()
+    }
+  }
         }
     }
     """.trimIndent()
@@ -128,7 +129,7 @@ fun List<Parameter>.filterQueries(): List<QueryParameter> = mapNotNull { paramet
 }
 
 fun List<Parameter>.filterPaths(): List<PathParameter> = mapNotNull { parameter ->
-    parameter.annotation.safeAs<Path>()?.let { annotation -> TypedParameter(annotation, parameter.name, parameter.type) }
+  parameter.annotation.safeAs<Path>()?.let { annotation -> TypedParameter(annotation, parameter.name, parameter.type) }
 }
 
 fun TypedParameter<Query>.render() = """parameter("${annotation.key}", $name)"""
