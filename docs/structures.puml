@@ -1,0 +1,77 @@
+@startuml
+
+class Method {
+    String name
+    VerbAnnotation httpVerb
+    List<HeaderAnnotation> headers
+    MimeEncoding? encoding
+    List<Parameter> params
+    Type returnType
+}
+
+class VerbAnnotation {
+    String verb
+    HttpPath path
+}
+
+class HeaderAnnotation {
+    List<String> headers
+}
+
+enum MimeEncoding {
+    MULTIPART
+    FORM_URL_ENCODED
+}
+
+class Parameter {
+    SourceAnnotation annotation
+    String name
+    Type type
+}
+
+class TypedAnnotation<A: SourceAnnotation> {
+    A annotation
+    String name
+    Type type
+}
+
+String <|-- Type
+
+String <|-- HttpPath
+
+class SourceAnnotation {
+    String name
+}
+
+class Body
+
+class Query {
+    String key
+    Boolean encoded
+}
+
+class Part {
+    String key
+    Boolean encoding
+}
+
+class Field {
+    String key
+}
+
+class Header
+
+SourceAnnotation <|-- Body
+SourceAnnotation <|-- Query
+SourceAnnotation <|-- Part
+SourceAnnotation <|-- Field
+SourceAnnotation <|-- Header
+
+Method o-- VerbAnnotation
+Method o-- HeaderAnnotation
+Method o-- MimeEncoding
+Method o-- Parameter
+Parameter o-- SourceAnnotation
+
+
+@enduml

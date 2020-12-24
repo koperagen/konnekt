@@ -1,0 +1,13 @@
+@startuml
+(Исправления) as (Quick fix)
+:Программист: as User
+
+User -> (Quick fix)
+
+note right of (Quick fix) : Способы автоматического \n исправления некоторых ошибок
+
+User --> (Компиляция)
+User --> (Пишет код)
+
+(Quick fix) .> (Пишет код)
+@enduml
