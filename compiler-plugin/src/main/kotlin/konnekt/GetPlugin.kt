@@ -7,6 +7,7 @@ import arrow.meta.phases.CompilerContext
 import arrow.meta.quotes.Transform
 import arrow.meta.quotes.classDeclaration
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
+import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
@@ -20,10 +21,8 @@ val Meta.konnektPlugin: CliPlugin
       classDeclaration(ctx, ::isKonnektClient) { c ->
         val implementation = body.functions.value
             .joinToString("\n") { it.generateDefinition(ctx, NamedFunction(it)) }
-        Transform.replace(
-          replacing = c,
-          newDeclaration = if (c.companionObjects.isEmpty()) {
-            """|
+        val newDeclaration = if (c.companionObjects.isEmpty()) {
+          """|
             |$kind $name {
             |   $body
             |   companion object {
@@ -34,12 +33,17 @@ val Meta.konnektPlugin: CliPlugin
             |     }
             |   }
             |}""".`class`
-          } else {
-            """|
+        } else {
+          """|
             |$kind $name {
             |   
             |}""".`class`
-          }
+        }
+        // How to debug transformations?
+        ctx.messageCollector?.toLogger()?.log(newDeclaration.toString())
+        Transform.replace(
+          replacing = c,
+          newDeclaration = newDeclaration
         )
       }
     )
