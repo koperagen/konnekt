@@ -110,11 +110,10 @@ fun Method.render(): String {
   return """
     override suspend fun $name(${params.render()}): $returnType {
         return client.${httpVerb.verb.toLowerCase()}(path = "${substituteParams(httpVerb.path, params.filterPaths())}") {
-            ${
-    params.filterQueries().joinToString("\n") {
-      it.render()
-    }
-  }
+            ${params.filterQueries().joinToString("\n") {
+                it.render()
+              }
+            }
         }
     }
     """.trimIndent()
