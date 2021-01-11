@@ -21,33 +21,27 @@ val Meta.konnektPlugin: CliPlugin
       classDeclaration(ctx, ::isKonnektClient) { c ->
         val implementation = body.functions.value
             .joinToString("\n") { it.generateDefinition(ctx, NamedFunction(it)) }
-        val newDeclaration = if (c.companionObjects.isEmpty()) {
-          """|
-            |$kind $name {
-            |   $body
-            |   companion object {
-            |     operator fun invoke(client: HttpClient) : $name {
-            |       return object : $name {
-            |         $implementation
-            |       }
-            |     }
-            |   }
-            |}""".`class`
-        } else {
-          """|
-            |$kind $name {
-            |   
-            |}""".`class`
-        }
         // How to debug transformations?
-        ctx.messageCollector?.toLogger()?.log(newDeclaration.toString())
-        Transform.replace(
-          replacing = c,
-          newDeclaration = newDeclaration
+        ctx.messageCollector?.toLogger()?.log(implementation)
+        Transform.newSources(
+            """|package ${c.containingKtFile.packageFqName}
+               |
+               |$ktorImports
+               |operator fun $name.Companion.invoke(client: HttpClient): $name {
+               |  return object : $name {
+               |    $implementation
+               |  }
+               |}
+               |""".trimMargin().file("$name\$Implementation")
         )
       }
     )
   }
+
+private val ktorImports: String = """
+  |import io.ktor.client.*
+  |import io.ktor.client.request.*
+  |""".trimMargin()
 
 fun KtNamedFunction.generateDefinition(ctx: CompilerContext, func: NamedFunction): String {
   return extractData(func).render()

@@ -4,7 +4,6 @@ import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
-import io.ktor.client.request.*
 import io.ktor.http.*
 import konnekt.prelude.GET
 import konnekt.prelude.Path
@@ -27,6 +26,8 @@ interface IceAndFireClient {
 
   @GET("/characters/{id}")
   suspend fun characterById(@Path("id") id: Int): String
+
+  companion object
 }
 
 class Test : AnnotationSpec() {
