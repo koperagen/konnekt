@@ -210,6 +210,8 @@ class CodegenTest : FreeSpec({
 
         @GET("/characters/{id}")
         suspend fun characterById(@Path("id") id: Int): Character
+        
+        companion object
       }
 
       val klient = HttpClient(MockEngine) {

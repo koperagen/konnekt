@@ -4,6 +4,7 @@ import arrow.meta.CliPlugin
 import arrow.meta.Meta
 import arrow.meta.invoke
 import arrow.meta.phases.CompilerContext
+import arrow.meta.quotes.ScopedList
 import arrow.meta.quotes.Transform
 import arrow.meta.quotes.classDeclaration
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
@@ -21,12 +22,16 @@ val Meta.konnektPlugin: CliPlugin
       classDeclaration(ctx, ::isKonnektClient) { c ->
         val implementation = body.functions.value
             .joinToString("\n") { it.generateDefinition(ctx, NamedFunction(it)) }
+        val imports = ScopedList(c.containingKtFile.importDirectives, separator = "\n")
+
         // How to debug transformations?
         ctx.messageCollector?.toLogger()?.log(implementation)
         Transform.newSources(
             """|package ${c.containingKtFile.packageFqName}
                |
                |$ktorImports
+               |$imports
+               |
                |operator fun $name.Companion.invoke(client: HttpClient): $name {
                |  return object : $name {
                |    $implementation
