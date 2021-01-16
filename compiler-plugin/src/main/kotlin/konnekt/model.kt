@@ -84,7 +84,7 @@ typealias Type = String
 
 typealias HttpPath = String
 
-sealed class SourceAnnotation(val name: String)
+sealed class SourceAnnotation(val annotationName: String)
 
 data class Path(val placeholder: String, val encoded: Boolean = false) : SourceAnnotation("Path") {
   override fun toString(): String {

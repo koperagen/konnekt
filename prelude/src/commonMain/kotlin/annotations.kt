@@ -61,7 +61,7 @@ annotation class PartMap
 annotation class PATCH
 
 @Target(AnnotationTarget.FUNCTION)
-annotation class POST
+annotation class POST(val value: String)
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class PUT

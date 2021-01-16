@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import konnekt.*
+import java.lang.reflect.InvocationTargetException
 
 @Suppress("unused")
 class CodegenTest : FreeSpec({
@@ -129,7 +130,7 @@ class CodegenTest : FreeSpec({
       annotation class PATCH
 
       @Target(AnnotationTarget.FUNCTION)
-      annotation class POST
+      annotation class POST(val value: String)
 
       @Target(AnnotationTarget.FUNCTION)
       annotation class PUT
@@ -142,19 +143,22 @@ class CodegenTest : FreeSpec({
       private val Url.fullUrl: String get() = "${'$'}{protocol.name}://${'$'}hostWithPortIfRequired${'$'}fullPath"
     """.trimIndent()
 
+    val imports = """
+        import io.ktor.client.HttpClient
+        import io.ktor.client.engine.mock.*
+        import io.ktor.client.features.defaultRequest
+        import io.ktor.client.features.json.*
+        import io.ktor.client.features.logging.DEFAULT
+        import io.ktor.client.features.logging.LogLevel
+        import io.ktor.client.features.logging.Logging
+        import io.ktor.client.request.*
+        import io.ktor.http.*
+        import kotlinx.coroutines.runBlocking
+        import java.io.File
+        import java.time.LocalDateTime
+    """.trimIndent()
+
     val classesStub = """
-      import io.ktor.client.HttpClient
-      import io.ktor.client.engine.mock.*
-      import io.ktor.client.features.defaultRequest
-      import io.ktor.client.features.json.*
-      import io.ktor.client.features.logging.DEFAULT
-      import io.ktor.client.features.logging.LogLevel
-      import io.ktor.client.features.logging.Logging
-      import io.ktor.client.request.*
-      import io.ktor.http.*
-      import kotlinx.coroutines.runBlocking
-      import java.io.File
-      import java.time.LocalDateTime
       data class Book(
         val url: String,
         val name: String,
@@ -191,6 +195,7 @@ class CodegenTest : FreeSpec({
 
     val declaration = """
       //metadebug
+      $imports
       $prelude
       $classesStub
       @client
@@ -324,6 +329,47 @@ class CodegenTest : FreeSpec({
             )
           }
       ))
+    }
+
+    "simple test" - {
+      val declaration = """
+ import kotlinx.coroutines.runBlocking|//metadebug
+        |$imports
+        |$prelude
+        |
+        |@client
+        |interface SimpleClient {
+        |   @POST("/url")
+        |   suspend fun test(): String
+        |   
+        |   companion object
+        |}
+        |
+        |val klient = HttpClient(MockEngine) {
+        |   engine {
+        |       addHandler { request ->
+        |           assert(request.method == HttpMethod.Post)
+        |           respondOk("OK")
+        |       }
+        |   }
+        |}
+        |
+        |val api = SimpleClient(klient)
+        |
+        |fun eval(): String = runBlocking { api.test() }
+      """.trimMargin()
+
+      "functional POST test" {
+        try {
+          assertThis(CompilerTest(
+              config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
+              code = { declaration.source },
+              assert = { "eval()".source.evalsTo("OK") }
+          ))
+        } catch (e: InvocationTargetException) {
+          throw e.cause!!
+        }
+      }
     }
   }
 })
