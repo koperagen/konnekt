@@ -231,7 +231,7 @@ fun KtAnnotated.hasAnnotation(
 
 fun substituteParams(path: String, pathParams: List<PathParameter>): String {
   return pathParams.fold(path) { path, param ->
-    path.replace("{${param.annotation.name}}", "\${${param.name}}")
+    path.replace("{${param.annotation.placeholder}}", "\${${param.name}}")
   }
 }
 
