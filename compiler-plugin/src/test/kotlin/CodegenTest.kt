@@ -333,7 +333,7 @@ class CodegenTest : FreeSpec({
 
     "simple test" - {
       val declaration = """
- import kotlinx.coroutines.runBlocking|//metadebug
+        |//metadebug
         |$imports
         |$prelude
         |
