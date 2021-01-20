@@ -8,6 +8,7 @@ import arrow.meta.quotes.ScopedList
 import arrow.meta.quotes.Transform
 import arrow.meta.quotes.classDeclaration
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
@@ -20,6 +21,9 @@ val Meta.konnektPlugin: CliPlugin
   get() = "GET Plugin" {
     meta(
       classDeclaration(ctx, ::isKonnektClient) { c ->
+        if (c.companionObjects.isEmpty())
+          knownError(c.nameAsSafeName.asString().noCompanion, c)
+
         val implementation = body.functions.value
             .joinToString("\n") { it.generateDefinition(ctx, NamedFunction(it)) }
         val imports = ScopedList(c.containingKtFile.importDirectives, separator = "\n")
@@ -244,3 +248,9 @@ enum class Request {
   POST,
   PUT
 }
+
+val String.noCompanion
+  get() = "@Client annotated interface $this needs to declare companion object."
+
+internal fun CompilerContext.knownError(message: String, element: KtAnnotated? = null): Unit =
+    ctx.messageCollector?.report(CompilerMessageSeverity.ERROR, message, null) ?: Unit

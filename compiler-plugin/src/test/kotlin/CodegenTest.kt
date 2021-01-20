@@ -371,6 +371,32 @@ class CodegenTest : FreeSpec({
         }
       }
     }
+
+    "companion object required" - {
+      val declaration = """
+        |//metadebug
+        |$imports
+        |$prelude
+        |
+        |@client
+        |interface SimpleClient {
+        |   @POST("/url")
+        |   suspend fun test(): String
+        |}
+      """.trimMargin()
+
+      "compiler error present" {
+        try {
+          assertThis(CompilerTest(
+              config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
+              code = { declaration.source },
+              assert = { failsWith { it.contains("SimpleClient".noCompanion)  } }
+          ))
+        } catch (e: InvocationTargetException) {
+          throw e.cause!!
+        }
+      }
+    }
   }
 })
 
