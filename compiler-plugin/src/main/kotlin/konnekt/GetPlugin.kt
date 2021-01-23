@@ -69,8 +69,6 @@ val multipartAnnotation = "Multipart"
 
 val formUrlEncodedAnnotation = "FormUrlEncoded"
 
-val sourceAnnotations = setOf("Path", "Body", "Query", "Part", "Field")
-
 fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
   val name = nameAsSafeName.identifier
   val verb = refactor1(ctx) ?: return null
@@ -126,126 +124,12 @@ fun <T> CompilerContext.parsingError(message: String, element: KtAnnotated? = nu
   return null
 }
 
-private fun KtNamedFunction.refactor1(ctx: CompilerContext): VerbAnnotation? {
-  val verbAnnotations = annotationEntries.mapNotNull { verbAnnotation(it) }
-  return when (verbAnnotations.size) {
-    0 -> ctx.parsingError("Client method should be annotated with some Verb Annotation", this)
-    1 -> {
-      val scope = verbAnnotations.first()
-      ctx.refine(scope)
-    }
-    else -> ctx.parsingError("Client method should be annotated with exactly 1 Verb Annotation", this)
-  }
-}
-
-private fun CompilerContext.refine(scope: VerbAnnotationScope): VerbAnnotation? {
-  return when (scope.verb) {
-    Verb.HTTP -> TODO()
-    else -> {
-      val argument = singleString(scope)
-      TODO()
-    }
-  }
-}
-
-private fun CompilerContext.singleString(scope: VerbAnnotationScope): String? {
-  return when (scope.arguments.size) {
-    1 -> {
-      val arg = scope.arguments.single()
-      TODO()
-    }
-    else -> TODO()/*parsingError("", scope.annotation)*/
-  }
-}
-
-inline fun <reified T : Enum<T>> enumValueOfOrNull(name: String): T? =
-    enumValues<T>().firstOrNull { it.name.equals(name, ignoreCase = true) }
-
-fun toVerbAnnotation(annotationEntry: KtAnnotationEntry, verb: String): VerbAnnotation {
-  val path = annotationEntry.valueArgumentList
-      ?.arguments
-      ?.map { it.text.removeSurrounding("\"") }
-      ?.singleOrNull()
-      ?: error("Expected exactly one argument")
-  println("konnekt.toVerbAnnotation: $path")
-  return VerbAnnotation(verb, path)
-}
-
 fun toHeaderAnnotation(annotationEntry: KtAnnotationEntry): HeaderAnnotation {
   val headers = annotationEntry.valueArgumentList
       ?.arguments
       ?.map { it.text.removeSurrounding("\"") }
       ?: emptyList()
   return HeaderAnnotation(headers)
-}
-
-fun toSourceAnnotationOrNull(annotationEntry: KtAnnotationEntry, annotationName: String): SourceAnnotation? {
-
-  return when (annotationName) {
-    "Path" -> path(annotationEntry)
-    "Body" -> body(annotationEntry)
-    "Query" -> query(annotationEntry)
-    "Part" -> part(annotationEntry)
-    "Field" -> field(annotationEntry)
-    else -> null
-  }
-}
-
-private fun List<KtValueArgument>.values(): Pair<String, Boolean?> =
-    (getStringOrNull(0) ?: error("Expected first string param in argument list")) to
-        getBooleanOrNull(1)
-
-private fun path(annotationEntry: KtAnnotationEntry): Path {
-    val args = annotationEntry.valueArgumentList?.arguments
-        ?: error("Argument list for path should contain 'id' and optoinally 'encoded'")
-    val (value, encoded) = args.values()
-    return if (encoded != null) {
-        Path(value, encoded)
-    } else {
-        Path(value)
-    }
-}
-
-private fun body(annotationEntry: KtAnnotationEntry): Body {
-    return Body
-}
-
-private fun query(annotationEntry: KtAnnotationEntry): Query {
-    val args = requireNotNull(annotationEntry.valueArgumentList?.arguments)
-    val (key, encoded) = args.values()
-    return if (encoded != null) {
-        Query(key, encoded)
-    } else {
-        Query(key)
-    }
-}
-
-private fun part(annotationEntry: KtAnnotationEntry): Part {
-    val args = requireNotNull(annotationEntry.valueArgumentList?.arguments)
-    val (key, encoded) = args.values()
-    return if (encoded != null) {
-        Part(key, encoded)
-    } else {
-        Part(key)
-    }
-}
-
-private fun field(annotationEntry: KtAnnotationEntry): Field {
-    val args = requireNotNull(annotationEntry.valueArgumentList?.arguments)
-    val key = requireNotNull(args.getStringOrNull(0))
-    return Field(key)
-}
-
-private fun List<KtValueArgument>.getStringOrNull(position: Int) =
-    getOrNull(position)?.text?.removeSurrounding("\"")
-
-private fun List<KtValueArgument>.getBooleanOrNull(position: Int) =
-    getOrNull(position)?.text?.toBooleanOrNull()
-
-private val booleanValues = mapOf("true" to true, "false" to false)
-
-fun String.toBooleanOrNull(): Boolean? {
-  return booleanValues[this]
 }
 
 fun isKonnektClient(ktClass: KtClass): Boolean = ktClass.isInterface() && ktClass.hasAnnotation("client", "prelude.client", "konnekt.prelude.client")
