@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException
 @Suppress("unused")
 class CodegenTest : FreeSpec({
 
-  "simple path" - {
+  "!simple path" - {
     val path = "/test/{placeholder}"
 
     "!Parse raw path string to components " {
@@ -41,7 +41,7 @@ class CodegenTest : FreeSpec({
     }
   }
 
-  "method render" - {
+  "!method render" - {
     "ff" {
       val path = "/pets/{id}"
       println(path)
