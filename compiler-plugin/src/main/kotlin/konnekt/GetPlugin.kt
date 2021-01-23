@@ -63,8 +63,6 @@ fun KtNamedFunction.generateDefinition(ctx: CompilerContext, func: NamedFunction
   return extractData(ctx)?.render()
 }
 
-val httpVerbs = Request.values().map { it.toString().toUpperCase() }.toSet()
-
 val headersAnnotations = setOf("Headers")
 
 val multipartAnnotation = "Multipart"
@@ -269,16 +267,6 @@ fun substituteParams(path: String, pathParams: List<PathParameter>): String {
   return pathParams.fold(path) { path, param ->
     path.replace("{${param.annotation.placeholder}}", "\${${param.name}}")
   }
-}
-
-enum class Request {
-  GET,
-  DELETE,
-  HEAD,
-  OPTIONS,
-  PATCH,
-  POST,
-  PUT
 }
 
 val String.noCompanion
