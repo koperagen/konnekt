@@ -14,18 +14,25 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 class KonnektPlugin : Meta {
-  override fun intercept(ctx: CompilerContext): List<CliPlugin> = listOf(konnektPlugin)
+  override fun intercept(ctx: CompilerContext): List<CliPlugin> =
+      listOf(konnektPlugin)
 }
 
 val Meta.konnektPlugin: CliPlugin
   get() = "GET Plugin" {
     meta(
       classDeclaration(ctx, ::isKonnektClient) { c ->
-        if (c.companionObjects.isEmpty())
+        if (c.companionObjects.isEmpty()) {
           knownError(c.nameAsSafeName.asString().noCompanion, c)
+          return@classDeclaration Transform.empty
+        }
 
         val implementation = body.functions.value
-            .joinToString("\n") { it.generateDefinition(ctx, NamedFunction(it)) }
+            .mapNotNull { it.generateDefinition(ctx, NamedFunction(it)) }
+            .takeIf { it.size == body.functions.value.size }
+            ?.joinToString("\n")
+            ?: return@classDeclaration Transform.empty
+
         val imports = ScopedList(c.containingKtFile.importDirectives, separator = "\n")
 
         // How to debug transformations?
@@ -52,8 +59,8 @@ private val ktorImports: String = """
   |import io.ktor.client.request.*
   |""".trimMargin()
 
-fun KtNamedFunction.generateDefinition(ctx: CompilerContext, func: NamedFunction): String {
-  return extractData(func).render()
+fun KtNamedFunction.generateDefinition(ctx: CompilerContext, func: NamedFunction): String? {
+  return extractData(ctx)?.render()
 }
 
 val httpVerbs = Request.values().map { it.toString().toUpperCase() }.toSet()
@@ -66,22 +73,10 @@ val formUrlEncodedAnnotation = "FormUrlEncoded"
 
 val sourceAnnotations = setOf("Path", "Body", "Query", "Part", "Field")
 
-fun KtNamedFunction.extractData(func: NamedFunction): Method {
+fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
   val name = nameAsSafeName.identifier
-  val verb = annotationEntries
-      .asSequence()
-      .map {
-        val name = it.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName
-        if (name != null && name in httpVerbs) {
-          it to name
-        } else {
-          null
-        }
-      }
-      .filterNotNull()
-      .firstOrNull()
-      ?.let { (annotation: KtAnnotationEntry, verb: String) -> toVerbAnnotation(annotation, verb) }
-      ?: TODO("Handle absence of verb annotation")
+  val verb = refactor1(ctx) ?: return null
+
   val headers = annotationEntries
       .mapNotNull {
         val name = it.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName
@@ -126,6 +121,43 @@ fun KtNamedFunction.extractData(func: NamedFunction): Method {
       }
   val returnType = typeReference?.text ?: TODO("Handle return type absence")
   return Method(name, verb, headers, encoding, parameters, returnType)
+}
+
+fun <T> CompilerContext.parsingError(message: String, element: KtAnnotated? = null): T? {
+  ctx.messageCollector?.report(CompilerMessageSeverity.ERROR, message, null)
+  return null
+}
+
+private fun KtNamedFunction.refactor1(ctx: CompilerContext): VerbAnnotation? {
+  val verbAnnotations = annotationEntries.mapNotNull { verbAnnotation(it) }
+  return when (verbAnnotations.size) {
+    0 -> ctx.parsingError("Client method should be annotated with some Verb Annotation", this)
+    1 -> {
+      val scope = verbAnnotations.first()
+      ctx.refine(scope)
+    }
+    else -> ctx.parsingError("Client method should be annotated with exactly 1 Verb Annotation", this)
+  }
+}
+
+private fun CompilerContext.refine(scope: VerbAnnotationScope): VerbAnnotation? {
+  return when (scope.verb) {
+    Verb.HTTP -> TODO()
+    else -> {
+      val argument = singleString(scope)
+      TODO()
+    }
+  }
+}
+
+private fun CompilerContext.singleString(scope: VerbAnnotationScope): String? {
+  return when (scope.arguments.size) {
+    1 -> {
+      val arg = scope.arguments.single()
+      TODO()
+    }
+    else -> TODO()/*parsingError("", scope.annotation)*/
+  }
 }
 
 inline fun <reified T : Enum<T>> enumValueOfOrNull(name: String): T? =
