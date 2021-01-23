@@ -3,6 +3,7 @@ package konnekt
 import arrow.meta.phases.analysis.ElementScope
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.addRemoveModifier.addModifier
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
@@ -15,24 +16,78 @@ data class Method(
   val returnType: Type
 )
 
-data class Method1(
-  val name: String,
-  val specification: RequestSpecification,
-  val returnType: Type
+class MethodScope(
+  val function: KtNamedFunction,
+  val name: String = function.nameAsSafeName.identifier,
+  val httpVerbs: List<VerbAnnotationScope> = function.annotationEntries.mapNotNull { verbAnnotation(it) },
+  val encoding: List<MimeEncodingScope> = function.annotationEntries.mapNotNull { mimeEncoding(it) },
+  val params: List<ParameterScope> = function.valueParameters.map { ParameterScope(it) },
+  val returnType: KtTypeReference? = function.typeReference
 )
 
-data class Parameter1(
-  val annotations: List<SourceAnnotation>,
-  val name: String,
-  val type: Type
+class VerbAnnotationScope(
+  val annotation: KtAnnotationEntry,
+  val verb: Verb,
+  val arguments: List<KtValueArgument> = annotation.valueArgumentList?.arguments ?: emptyList()
 )
 
-data class RequestSpecification(
-  val httpVerb: VerbAnnotation,
-  val headers: List<HeaderAnnotation>,
-  val parameters: List<Parameter1>,
-  val encoding: MimeEncoding?
+fun verbAnnotation(annotationEntry: KtAnnotationEntry): VerbAnnotationScope? {
+  val verb =  when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
+    "GET" -> Verb.GET
+    "DELETE" -> Verb.DELETE
+    "HEAD" -> Verb.HEAD
+    "OPTIONS" -> Verb.OPTIONS
+    "PATCH" -> Verb.PATCH
+    "POST" -> Verb.POST
+    "PUT" -> Verb.PUT
+    "HTTP" -> Verb.HTTP
+    else -> null
+  }
+  return verb?.let { VerbAnnotationScope(annotationEntry, it) }
+}
+
+enum class Verb {
+  GET, DELETE, HEAD, OPTIONS, PATCH, POST, PUT, HTTP;
+}
+
+class MimeEncodingScope(annotationEntry: KtAnnotationEntry, encoding: MimeEncoding)
+
+fun mimeEncoding(annotationEntry: KtAnnotationEntry): MimeEncodingScope? {
+  val name = annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName
+  return when (name) {
+    multipartAnnotation -> MimeEncoding.MULTIPART
+    formUrlEncodedAnnotation -> MimeEncoding.FORM_URL_ENCODED
+    else -> null
+  }?.let { encoding ->
+    MimeEncodingScope(annotationEntry, encoding)
+  }
+}
+
+class ParameterScope(
+  val parameter: KtParameter,
+  val sourceAnnotations: List<SourceAnnotationScope> = parameter.annotationEntries.mapNotNull { sourceAnnotation(it) },
+  val name: String = parameter.nameAsSafeName.identifier,
+  val type: KtTypeReference? = parameter.typeReference
 )
+
+class SourceAnnotationScope(val annotationEntry: KtAnnotationEntry, source: Source)
+
+enum class Source {
+  BODY, QUERY, PART, FIELD, PATH, HEADER
+}
+
+fun sourceAnnotation(annotationEntry: KtAnnotationEntry): SourceAnnotationScope? {
+  val source = when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
+    null -> null
+    "Path" -> Source.PATH
+    "Body" -> Source.BODY
+    "Query" -> Source.QUERY
+    "Part" -> Source.PART
+    "Header" -> Source.HEADER
+    else -> null
+  }
+  return source?.let { SourceAnnotationScope(annotationEntry, source) }
+}
 
 data class VerbAnnotation(val verb: String, val path: HttpPath) {
   companion object {
