@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.intellij") version "0.4.21"
+    id("org.jetbrains.intellij") version "0.5.0"
     kotlin("jvm")
 }
 
@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    api(project(":compiler-plugin"))
+    api(project(":compiler-plugin", configuration = "shadow"))
     api("io.arrow-kt:idea-plugin:1.4.10-SNAPSHOT")
     api("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
 }

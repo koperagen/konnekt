@@ -2,6 +2,7 @@ import arrow.meta.plugin.testing.CompilerTest
 import arrow.meta.plugin.testing.CompilerTest.Companion.source
 import arrow.meta.plugin.testing.Dependency
 import arrow.meta.plugin.testing.assertThis
+import konnekt.TransformMetaPlugin
 import org.junit.Test
 
 class BinaryExpressionTest {

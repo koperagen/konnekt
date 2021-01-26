@@ -20,11 +20,13 @@ repositories {
 
 dependencies {
   val ktor_version = "1.3.0"
-  implementation(kotlin("stdlib-jdk8"))
+  val OPENAPI_VERSION = "7.0.3"
 
+  compileOnly(kotlin("stdlib-jdk8"))
+  compileOnly("com.intellij:openapi:$OPENAPI_VERSION")
   implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.10")
   api(project(":prelude"))
-  api("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
+  compileOnly("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
   testImplementation("io.arrow-kt:meta-test:1.4.10-SNAPSHOT")
 
   testImplementation("junit:junit:4.13") // only for SampleTest
@@ -57,5 +59,21 @@ tasks.withType<Jar> {
       }!!)
   ) {
     exclude("META-INF/services/org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar")
+  }
+}
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+  configurations = listOf(project.configurations.compileOnly.get())
+  relocate("org.jetbrains.kotlin.com.intellij", "com.intellij")
+  dependencies {
+    exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+    // and its transitive dependencies:
+    exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
+    exclude(dependency("org.jetbrains:annotations"))
+
+    exclude(dependency("com.intellij:openapi"))
+    // and its transitive dependencies:
+    exclude(dependency("com.intellij:extensions"))
+    exclude(dependency("com.intellij:annotations"))
   }
 }
