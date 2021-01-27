@@ -6,9 +6,10 @@ plugins {
 }
 
 group = "org.example"
-version = "1.0-SNAPSHOT"
 
 val KOTLIN_TEST_VERSION: String by project
+val KOTLIN_VERSION: String by project
+val OPENAPI_VERSION: String by project
 
 repositories {
   mavenCentral()
@@ -20,13 +21,17 @@ repositories {
 
 dependencies {
   val ktor_version = "1.3.0"
-  val OPENAPI_VERSION = "7.0.3"
 
+  api(project(":prelude"))
   compileOnly(kotlin("stdlib-jdk8"))
   compileOnly("com.intellij:openapi:$OPENAPI_VERSION")
-  implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.10")
-  api(project(":prelude"))
+  compileOnly("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.4.10")
   compileOnly("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
+  compileOnly("org.jetbrains.kotlin:kotlin-script-util:$KOTLIN_VERSION") {
+      exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
+      exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler")
+      exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
+  }
   testImplementation("io.arrow-kt:meta-test:1.4.10-SNAPSHOT")
 
   testImplementation("junit:junit:4.13") // only for SampleTest
@@ -51,15 +56,17 @@ dependencies {
 tasks.withType<Test> {
   useJUnitPlatform()
 }
-
-tasks.withType<Jar> {
-  from(
-      zipTree(sourceSets.main.get().compileClasspath.find {
-        it.absolutePath.contains(Paths.get("arrow-kt", "compiler-plugin").toString())
-      }!!)
-  ) {
-    exclude("META-INF/services/org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar")
-  }
+tasks.create<Jar>("createNewPlugin") {
+    dependsOn("classes")
+    from("build/classes/kotlin/main")
+    from("build/resources/main")
+    from(
+        zipTree(sourceSets.main.get().compileClasspath.find {
+            it.absolutePath.contains(Paths.get("arrow-kt", "compiler-plugin").toString())
+        }!!)
+    ) {
+        exclude("META-INF/services/org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar")
+    }
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
