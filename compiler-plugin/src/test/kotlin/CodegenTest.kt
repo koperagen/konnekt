@@ -400,6 +400,43 @@ class CodegenTest : FreeSpec({
   }
 })
 
+fun Any.resourceContent(file: String): String {
+    return javaClass.classLoader.getResourceAsStream(file)?.reader()?.readText() ?: error("Resourse $file not found")
+}
+
+
+data class Book(
+    val url: String,
+    val name: String,
+    val isbn: String,
+    val authors: List<String>,
+    val numberOfPages: String,
+    val publisher: String,
+    val country: String,
+    val mediaType: String,
+    val released: String,
+    val characters: List<String>,
+    val povCharacters: List<String>
+)
+
+data class Character(
+    val url: String,
+    val name: String,
+    val gender: String,
+    val culture: String,
+    val born: String,
+    val died: String,
+    val titles: List<String>,
+    val aliases: List<String>,
+    val father: String,
+    val mother: String,
+    val spouse: String,
+    val allegiances: List<String>,
+    val books: List<String>,
+    val povBooks: List<String>,
+    val tvSeries: List<String>,
+    val playedBy: List<String>
+)
 
 val ConfigSyntax.ktorDependencies get() = addDependencies(
     Dependency("ktor-client-core:1.3.0"),
