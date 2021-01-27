@@ -32,7 +32,7 @@ kotlin.target {
   compilations.all {
     kotlinOptions {
       freeCompilerArgs = listOf(
-          "-Xplugin=${rootDir}/compiler-plugin/build/libs/compiler-plugin-1.0-SNAPSHOT.jar"
+          "-Xplugin=${rootDir}/compiler-plugin/build/libs/compiler-plugin.jar"
       )
     }
   }
