@@ -16,16 +16,24 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    api(project(":compiler-plugin", configuration = "shadow"))
-    api("io.arrow-kt:idea-plugin:1.4.10-SNAPSHOT")
-    api("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
+    implementation(project(":compiler-plugin", configuration = "shadow"))
+    implementation("io.arrow-kt:idea-plugin:1.4.10-SNAPSHOT") {
+      exclude(group = "io.arrow-kt", module = "compiler-plugin")
+    }
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version = "2020.2.1"
-    setPlugins("gradle", "gradle-java", "java", "org.jetbrains.kotlin:${KOTLIN_IDEA_VERSION}", "git4idea")
+    setPlugins(
+        "gradle", "gradle-java", "java", "org.jetbrains.kotlin:${KOTLIN_IDEA_VERSION}",
+        "git4idea", "io.arrow-kt.arrow:1.4.10-SNAPSHOT-1606149534"
+    )
+
+    pluginsRepo {
+        custom("https://meta.arrow-kt.io/idea-plugin/latest-snapshot/updatePlugins.xml")
+        maven("https://plugins.jetbrains.com/maven")
+    }
 }
 
 tasks {
