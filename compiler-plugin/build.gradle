@@ -13,6 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import java.nio.file.Paths
 
 plugins {
     id "org.jetbrains.kotlin.jvm"
@@ -67,6 +68,18 @@ compileKotlin {
     kotlinOptions {
         freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
         jvmTarget = "$JVM_TARGET_VERSION"
+    }
+}
+
+task createNewPlugin(type: Jar, dependsOn: classes) {
+    from 'build/classes/kotlin/main'
+    from 'build/resources/main'
+    from (
+            zipTree(sourceSets.main.compileClasspath.find {
+                it.absolutePath.contains(Paths.get("io.arrow-kt","compiler-plugin").toString())
+            })
+    ) {
+        exclude 'META-INF/services/org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar'
     }
 }
 

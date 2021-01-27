@@ -39,5 +39,5 @@ kotlin.target {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-  dependsOn(":compiler-plugin:assemble")
+  dependsOn(":compiler-plugin:createNewPlugin")
 }
