@@ -154,7 +154,7 @@ fun substituteParams(path: String, pathParams: List<PathParameter>): String {
 }
 
 val String.noCompanion
-  get() = "@Client annotated interface $this needs to declare companion object."
+  get() = "@client annotated interface $this needs to declare companion object."
 
 internal fun CompilerContext.knownError(message: String, element: KtAnnotated? = null): Unit =
     ctx.messageCollector?.report(CompilerMessageSeverity.ERROR, message, null) ?: Unit

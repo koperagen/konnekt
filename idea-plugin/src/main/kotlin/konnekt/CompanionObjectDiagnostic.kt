@@ -32,7 +32,7 @@ val IdeMetaPlugin.companionObjectInspection: AbstractApplicabilityBasedInspectio
     inspectionHighlightType = { ProblemHighlightType.ERROR },
     kClass = KtClass::class.java,
     highlightingRange = { klass -> klass.nameIdentifierTextRangeInThis() },
-    inspectionText = { "interface ${it.name} should have companion object" },
+    inspectionText = { (it.name ?: "<no name provided>").noCompanion  },
     applyTo = { klass, _, _ ->
       klass.addDeclaration(KtPsiFactory(klass).createCompanionObject())
     },
