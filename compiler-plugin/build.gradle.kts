@@ -32,6 +32,7 @@ dependencies {
       exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler")
       exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
   }
+  testImplementation("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
   testImplementation("io.arrow-kt:meta-test:1.4.10-SNAPSHOT")
 
   testImplementation("junit:junit:4.13") // only for SampleTest
