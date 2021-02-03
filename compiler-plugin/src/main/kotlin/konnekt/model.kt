@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 data class Method(
   val name: String,
-  val httpVerb: VerbAnnotation,
+  val httpVerb: VerbAnnotationModel,
   val headers: List<HeaderAnnotation>,
   val encoding: MimeEncoding? = null,
   val params: List<Parameter>,
@@ -89,7 +89,7 @@ fun sourceAnnotation(annotationEntry: KtAnnotationEntry): SourceAnnotationScope?
   return source?.let { SourceAnnotationScope(annotationEntry, source) }
 }
 
-data class VerbAnnotation(val verb: String, val path: HttpPath) {
+data class VerbAnnotationModel(val verb: String, val path: HttpPath) {
   companion object {
     private const val GET = "get"
     private const val DELETE = "delete"
@@ -99,13 +99,13 @@ data class VerbAnnotation(val verb: String, val path: HttpPath) {
     private const val POST = "post"
     private const val PUT = "put"
 
-    fun get(path: HttpPath) = VerbAnnotation(GET, path)
-    fun delete(path: HttpPath) = VerbAnnotation(DELETE, path)
-    fun head(path: HttpPath) = VerbAnnotation(HEAD, path)
-    fun options(path: HttpPath) = VerbAnnotation(OPTIONS, path)
-    fun patch(path: HttpPath) = VerbAnnotation(PATCH, path)
-    fun post(path: HttpPath) = VerbAnnotation(POST, path)
-    fun put(path: HttpPath) = VerbAnnotation(PUT, path)
+    fun get(path: HttpPath) = VerbAnnotationModel(GET, path)
+    fun delete(path: HttpPath) = VerbAnnotationModel(DELETE, path)
+    fun head(path: HttpPath) = VerbAnnotationModel(HEAD, path)
+    fun options(path: HttpPath) = VerbAnnotationModel(OPTIONS, path)
+    fun patch(path: HttpPath) = VerbAnnotationModel(PATCH, path)
+    fun post(path: HttpPath) = VerbAnnotationModel(POST, path)
+    fun put(path: HttpPath) = VerbAnnotationModel(PUT, path)
   }
 }
 
