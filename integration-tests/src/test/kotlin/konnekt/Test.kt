@@ -5,13 +5,13 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
+import konnekt.prelude.Client
 import konnekt.prelude.GET
 import konnekt.prelude.Path
 import konnekt.prelude.Query
-import konnekt.prelude.client
 import kotlinx.coroutines.runBlocking
 
-@client
+@Client
 interface IceAndFireClient {
   @GET("/books")
   suspend fun listBooks(

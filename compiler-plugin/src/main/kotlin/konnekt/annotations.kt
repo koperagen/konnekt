@@ -1,6 +1,7 @@
 package konnekt
 
 import konnekt.prelude.Body
+import konnekt.prelude.Client
 import konnekt.prelude.DELETE
 import konnekt.prelude.Field
 import konnekt.prelude.FormUrlEncoded
@@ -16,9 +17,8 @@ import konnekt.prelude.PUT
 import konnekt.prelude.Part
 import konnekt.prelude.Path
 import konnekt.prelude.Query
-import konnekt.prelude.client
 
-val CLIENT_ANNOTATION_NAMES = setOf(client::class.java.simpleName, client::class.java.name)
+val CLIENT_ANNOTATION_NAMES = setOf(Client::class.java.simpleName, Client::class.java.name)
 
 val SOURCE_ANNOTATIONS = setOf(
     Path::class.java,

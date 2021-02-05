@@ -1,7 +1,7 @@
 package konnekt.prelude
 
 @Target(AnnotationTarget.CLASS)
-annotation class client
+annotation class Client
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class HTTP

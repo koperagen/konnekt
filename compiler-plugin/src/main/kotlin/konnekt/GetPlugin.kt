@@ -8,10 +8,14 @@ import arrow.meta.quotes.ScopedList
 import arrow.meta.quotes.Transform
 import arrow.meta.quotes.classDeclaration
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
-import konnekt.prelude.client
+import konnekt.prelude.Client
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.toLogger
-import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.KtAnnotated
+import org.jetbrains.kotlin.psi.KtAnnotationEntry
+import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtUserType
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 class KonnektPlugin : Meta {
@@ -155,10 +159,10 @@ fun substituteParams(path: String, pathParams: List<PathParameter>): String {
 }
 
 val String.noCompanion
-  get() = "${client::class.java.simpleName} annotated interface $this needs to declare companion object."
+  get() = "${Client::class.java.simpleName} annotated interface $this needs to declare companion object."
 
 val String.notSuspended
-  get() = "Function in ${client::class.java.simpleName} interface should have suspend modifier"
+  get() = "Function in ${Client::class.java.simpleName} interface should have suspend modifier"
 
 internal fun CompilerContext.knownError(message: String, element: KtAnnotated? = null): Unit =
     ctx.messageCollector?.report(CompilerMessageSeverity.ERROR, message, null) ?: Unit
