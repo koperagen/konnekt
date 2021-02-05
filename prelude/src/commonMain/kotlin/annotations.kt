@@ -40,19 +40,19 @@ annotation class Body
 annotation class QueryMap
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
-annotation class Field(val key: String)
+annotation class Field(val value: String, val encoded: Boolean = false)
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class FieldMap
 
-@Target(AnnotationTarget.FUNCTION)
-annotation class Header
+@Target(AnnotationTarget.VALUE_PARAMETER)
+annotation class Header(val value: String)
 
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class HeaderMap
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
-annotation class Part
+annotation class Part(val value: String)
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class PartMap

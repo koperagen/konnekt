@@ -76,7 +76,7 @@ val formUrlEncodedAnnotation = "FormUrlEncoded"
 
 fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
   val name = nameAsSafeName.identifier
-  val verb = refactor1(ctx) ?: return null
+  val verb = verbs(ctx) ?: return null
 
   val headers = annotationEntries
       .mapNotNull {
@@ -104,22 +104,7 @@ fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
         }
       }
 
-  val parameters = valueParameters
-      .map { parameter ->
-        val sourceAnnotation = parameter.annotationEntries
-            .mapNotNull { annotationEntry ->
-              val annotationName = annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName
-              if (annotationName != null && annotationName in sourceAnnotations) {
-                toSourceAnnotationOrNull(annotationEntry, annotationName)
-              } else {
-                null
-              }
-            }
-            .first()
-        val name = parameter.nameAsSafeName.identifier
-        val type = parameter.typeReference?.text ?: TODO("Handle value parameter type absence")
-        Parameter(sourceAnnotation, name, type)
-      }
+  val parameters = parameters(ctx) ?: return null
   val returnType = typeReference?.text ?: TODO("Handle return type absence")
   return Method(name, verb, headers, encoding, parameters, returnType)
 }
@@ -157,6 +142,8 @@ fun substituteParams(path: String, pathParams: List<PathParameter>): String {
     path.replace("{${param.annotation.placeholder}}", "\${${param.name}}")
   }
 }
+
+fun Any?.TODO(cause: String): Nothing = throw NotImplementedError(cause)
 
 val String.noCompanion
   get() = "${Client::class.java.simpleName} annotated interface $this needs to declare companion object."

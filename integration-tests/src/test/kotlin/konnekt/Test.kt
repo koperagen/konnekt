@@ -25,7 +25,7 @@ interface IceAndFireClient {
   suspend fun listCharacters(): String
 
   @GET("/characters/{id}")
-  suspend fun characterById(@Path("id") id: Int): String
+  suspend fun characterById(@Path("id", false) id: Int): String
 
   companion object
 }

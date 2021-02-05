@@ -154,15 +154,14 @@ data class Path(val placeholder: String, val encoded: Boolean = false) : SourceA
 
 object Body : SourceAnnotation("Body")
 
-// TODO Check default param for encoded
-data class Query(val key: String, val encoded: Boolean = false) : SourceAnnotation("Query")
+data class Query(val value: String, val encoded: Boolean = false) : SourceAnnotation("Query")
 
-data class Part(val key: String, val encoding: Boolean = false) : SourceAnnotation("Part")
+data class Part(val value: String, val encoding: String) : SourceAnnotation("Part")
 
-data class Field(val key: String) : SourceAnnotation("Field")
+data class Field(val value: String, val encoded: Boolean = false) : SourceAnnotation("Field")
 
-// TODO HeaderMap + Header annotation
-object Header : SourceAnnotation("Header")
+// TODO HeaderMap
+data class Header(val value: String) : SourceAnnotation("Header")
 
 fun Method.render(): String {
   fun List<Parameter>.render() = joinToString { "${it.name}: ${it.type}" }
@@ -191,4 +190,4 @@ fun List<Parameter>.filterPaths(): List<PathParameter> = mapNotNull { parameter 
   parameter.annotation.safeAs<Path>()?.let { annotation -> TypedParameter(annotation, parameter.name, parameter.type) }
 }
 
-fun TypedParameter<Query>.render() = """parameter("${annotation.key}", $name)"""
+fun TypedParameter<Query>.render() = """parameter("${annotation.value}", $name)"""

@@ -3,7 +3,7 @@ package konnekt
 import arrow.meta.phases.CompilerContext
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
-internal fun KtNamedFunction.refactor1(ctx: CompilerContext): VerbAnnotationModel? {
+internal fun KtNamedFunction.verbs(ctx: CompilerContext): VerbAnnotationModel? {
   val verbAnnotations = annotationEntries.mapNotNull { verbAnnotation(it) }
   return when (verbAnnotations.size) {
     0 -> ctx.parsingError("Client method should be annotated with some Verb Annotation", this)
