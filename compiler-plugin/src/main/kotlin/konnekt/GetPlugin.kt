@@ -8,6 +8,7 @@ import arrow.meta.quotes.ScopedList
 import arrow.meta.quotes.Transform
 import arrow.meta.quotes.classDeclaration
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
+import konnekt.prelude.client
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.psi.*
@@ -132,7 +133,7 @@ fun toHeaderAnnotation(annotationEntry: KtAnnotationEntry): HeaderAnnotation {
   return HeaderAnnotation(headers)
 }
 
-fun isKonnektClient(ktClass: KtClass): Boolean = ktClass.isInterface() && ktClass.hasAnnotation("client", "prelude.client", "konnekt.prelude.client")
+fun isKonnektClient(ktClass: KtClass): Boolean = ktClass.isInterface() && ktClass.hasAnnotation(*CLIENT_ANNOTATION_NAMES.toTypedArray())
 
 fun KtAnnotated.hasAnnotation(
     vararg annotationNames: String
@@ -154,7 +155,10 @@ fun substituteParams(path: String, pathParams: List<PathParameter>): String {
 }
 
 val String.noCompanion
-  get() = "@client annotated interface $this needs to declare companion object."
+  get() = "${client::class.java.simpleName} annotated interface $this needs to declare companion object."
+
+val String.notSuspended
+  get() = "Function in ${client::class.java.simpleName} interface should have suspend modifier"
 
 internal fun CompilerContext.knownError(message: String, element: KtAnnotated? = null): Unit =
     ctx.messageCollector?.report(CompilerMessageSeverity.ERROR, message, null) ?: Unit
