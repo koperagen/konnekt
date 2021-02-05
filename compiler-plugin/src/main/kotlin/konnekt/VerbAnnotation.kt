@@ -1,11 +1,7 @@
 package konnekt
 
 import arrow.meta.phases.CompilerContext
-import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.KtStringTemplateExpression
-import org.jetbrains.kotlin.psi.KtValueArgument
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 internal fun KtNamedFunction.refactor1(ctx: CompilerContext): VerbAnnotationModel? {
   val verbAnnotations = annotationEntries.mapNotNull { verbAnnotation(it) }
@@ -48,16 +44,6 @@ private fun CompilerContext.twoString(scope: VerbAnnotationScope): Pair<String, 
       constantStringOrNull(arg1)?.let { l -> constantStringOrNull(arg2)?.let { r -> l to r } }
     }
     else -> parsingError("${scope.verb} should contain exactly 2 arguments: HTTP verb and URL pattern")
-  }
-}
-
-private fun CompilerContext.constantStringOrNull(arg: KtValueArgument): String? {
-  return arg.getArgumentExpression()?.safeAs<KtStringTemplateExpression>()?.let {
-    when (it.entries.size) {
-      0 -> ""
-      1 -> it.entries.single().safeAs<KtLiteralStringTemplateEntry>()?.text
-      else -> parsingError("URL pattern argument should be simple literal string without interpolation")
-    }
   }
 }
 
