@@ -44,7 +44,7 @@ private fun CompilerContext.twoString(scope: VerbAnnotationScope): Pair<String, 
   return when (scope.arguments.size) {
     2 -> {
       val arg1 = scope.arguments[0]
-      val arg2 = scope.arguments[0]
+      val arg2 = scope.arguments[1]
       constantStringOrNull(arg1)?.let { l -> constantStringOrNull(arg2)?.let { r -> l to r } }
     }
     else -> parsingError("${scope.verb} should contain exactly 2 arguments: HTTP verb and URL pattern")
