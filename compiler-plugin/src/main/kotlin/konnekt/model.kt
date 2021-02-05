@@ -3,7 +3,12 @@ package konnekt
 import arrow.meta.phases.analysis.ElementScope
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.KtAnnotationEntry
+import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtParameter
+import org.jetbrains.kotlin.psi.KtTypeReference
+import org.jetbrains.kotlin.psi.KtUserType
+import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.addRemoveModifier.addModifier
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
@@ -70,7 +75,7 @@ class ParameterScope(
   val type: KtTypeReference? = parameter.typeReference
 )
 
-class SourceAnnotationScope(val annotationEntry: KtAnnotationEntry, source: Source)
+class SourceAnnotationScope(val annotationEntry: KtAnnotationEntry, val source: Source)
 
 enum class Source {
   BODY, QUERY, PART, FIELD, PATH, HEADER
