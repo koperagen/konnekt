@@ -17,6 +17,7 @@ import konnekt.prelude.PUT
 import konnekt.prelude.Part
 import konnekt.prelude.Path
 import konnekt.prelude.Query
+import konnekt.prelude.Header
 
 val CLIENT_ANNOTATION_NAMES = setOf(Client::class.java.simpleName, Client::class.java.name)
 
@@ -25,7 +26,8 @@ val SOURCE_ANNOTATIONS = setOf(
     Body::class.java,
     Query::class.java,
     Field::class.java,
-    Part::class.java
+    Part::class.java,
+    Header::class.java
 )
 
 val HEADERS_ANNOTATIONS = setOf(
