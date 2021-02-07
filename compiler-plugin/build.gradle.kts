@@ -22,7 +22,7 @@ repositories {
 dependencies {
   val ktor_version = "1.3.0"
 
-  api(project(":prelude"))
+  compileOnly(project(":prelude"))
   compileOnly(kotlin("stdlib-jdk8"))
   compileOnly("com.intellij:openapi:$OPENAPI_VERSION")
   compileOnly("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.4.10")
@@ -32,6 +32,8 @@ dependencies {
       exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler")
       exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
   }
+
+  testImplementation(project(":prelude"))
   testImplementation("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
   testImplementation("io.arrow-kt:meta-test:1.4.10-SNAPSHOT")
 

@@ -11,10 +11,9 @@ object CompanionObjectInspectionCode {
   val interfaceDeclaration = """
     package test
     
-    @Target(AnnotationTarget.CLASS)
-    annotation class client
+    import konnekt.prelude.*
     
-    @client interface Test 
+    @Client interface Test 
   """.trimIndent()
 }
 
