@@ -63,6 +63,11 @@ tasks.create<Jar>("createNewPlugin") {
     from("build/resources/main")
     from(
         zipTree(sourceSets.main.get().compileClasspath.find {
+          it.absolutePath.contains(Paths.get("konnekt", "prelude").toString())
+        }!!)
+    )
+    from(
+        zipTree(sourceSets.main.get().compileClasspath.find {
             it.absolutePath.contains(Paths.get("arrow-kt", "compiler-plugin").toString())
         }!!)
     ) {
