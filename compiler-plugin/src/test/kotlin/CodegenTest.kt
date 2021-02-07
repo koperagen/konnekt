@@ -69,72 +69,6 @@ class CodegenTest : FreeSpec({
 
   "interface render" - {
     val prelude = """
-      @Target(AnnotationTarget.CLASS)
-      annotation class client
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class GET(val value: String)
-
-      @Target(AnnotationTarget.VALUE_PARAMETER)
-      annotation class Path(val value: String, val encoded: Boolean = false)
-
-      @Target(AnnotationTarget.VALUE_PARAMETER)
-      annotation class Query(val value: String, val encoded: Boolean = false)
-
-      @Target(AnnotationTarget.VALUE_PARAMETER)
-      annotation class Body
-
-      @Target(AnnotationTarget.VALUE_PARAMETER)
-      annotation class QueryMap
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class DELETE(val value: String)
-
-      @Target(AnnotationTarget.VALUE_PARAMETER)
-      annotation class Field(val key: String)
-
-      @Target(AnnotationTarget.VALUE_PARAMETER)
-      annotation class FieldMap
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class FormUrlEncoded
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class HEAD
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class Header
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class HeaderMap
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class Headers(vararg val values: String)
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class HTTP
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class Multipart
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class OPTIONS
-
-      @Target(AnnotationTarget.VALUE_PARAMETER)
-      annotation class Part
-
-      @Target(AnnotationTarget.VALUE_PARAMETER)
-      annotation class PartMap
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class PATCH
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class POST(val value: String)
-
-      @Target(AnnotationTarget.FUNCTION)
-      annotation class PUT
-
       fun Any.resourceContent(name: String) = javaClass.classLoader.getResource(name)?.readText() ?: error("Not fount resource file ${'$'}name")
       fun MockRequestHandleScope.respondJson(file: File) = respondJson(file.readText())
       fun MockRequestHandleScope.respondJson(content: String): HttpResponseData =
@@ -153,9 +87,11 @@ class CodegenTest : FreeSpec({
         import io.ktor.client.features.logging.Logging
         import io.ktor.client.request.*
         import io.ktor.http.*
+        import io.ktor.http.Url
         import kotlinx.coroutines.runBlocking
         import java.io.File
         import java.time.LocalDateTime
+        import konnekt.prelude.*
     """.trimIndent()
 
     val classesStub = """
@@ -198,7 +134,7 @@ class CodegenTest : FreeSpec({
       $imports
       $prelude
       $classesStub
-      @client
+      @Client
       interface IceAndFireClient {
         @GET("/books")
         suspend fun listBooks(
@@ -337,7 +273,7 @@ class CodegenTest : FreeSpec({
         |$imports
         |$prelude
         |
-        |@client
+        |@Client
         |interface SimpleClient {
         |   @POST("/url")
         |   suspend fun test(): String
@@ -378,7 +314,7 @@ class CodegenTest : FreeSpec({
         |$imports
         |$prelude
         |
-        |@client
+        |@Client
         |interface SimpleClient {
         |   @POST("/url")
         |   suspend fun test(): String
@@ -451,7 +387,8 @@ val ConfigSyntax.ktorDependencies get() = addDependencies(
     Dependency("ktor-client-mock-jvm:1.3.0"),
     Dependency("kotlinx-coroutines-core-jvm:1.3.9"),
     Dependency("jackson-databind:2.9.9.3"),
-    Dependency("jackson-module-kotlin:2.9.9")
+    Dependency("jackson-module-kotlin:2.9.9"),
+    Dependency("prelude")
 )
 
 
