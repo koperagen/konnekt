@@ -28,7 +28,7 @@ val IdeMetaPlugin.companionObjectInspection: AbstractApplicabilityBasedInspectio
   get() = applicableInspection(
     defaultFixText = "Companion object",
     staticDescription = "Companion object inspection",
-    fixText = { "companion object required on interface ${it.name} annotated with @Client" },
+    fixText = { "Add companion object " },
     inspectionHighlightType = { ProblemHighlightType.ERROR },
     kClass = KtClass::class.java,
     highlightingRange = { klass -> klass.nameIdentifierTextRangeInThis() },
