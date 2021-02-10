@@ -1,5 +1,6 @@
 plugins {
   kotlin("multiplatform")
+  `maven-publish`
 }
 
 group = "org.example"
@@ -8,6 +9,21 @@ version = "1.0-SNAPSHOT"
 repositories {
   mavenCentral()
   jcenter()
+}
+
+publishing {
+  val username by lazy { System.getenv("KONNEKT_MAVEN_USERNAME") }
+  val password by lazy { System.getenv("KONNEKT_MAVEN_PASSWORD") }
+
+  repositories {
+    maven {
+      url = uri("https://maven.pkg.jetbrains.space/klimenko/p/konnekt/maven")
+      credentials {
+        setUsername(username)
+        setPassword(password)
+      }
+    }
+  }
 }
 
 kotlin {
