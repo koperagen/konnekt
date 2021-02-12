@@ -89,6 +89,7 @@ fun sourceAnnotation(annotationEntry: KtAnnotationEntry): SourceAnnotationScope?
     "Query" -> Source.QUERY
     "Part" -> Source.PART
     "Header" -> Source.HEADER
+    "Field" -> Source.FIELD
     else -> null
   }
   return source?.let { SourceAnnotationScope(annotationEntry, source) }

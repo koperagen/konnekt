@@ -16,7 +16,7 @@ fun KtNamedFunction.parameters(ctx: CompilerContext): List<Parameter>? {
 private fun CompilerContext.refine(scope: ParameterScope): SourceAnnotation? {
     val annotation = when (scope.sourceAnnotations.size) {
       1 -> scope.sourceAnnotations[0]
-      else -> return parsingError("Value parameter ${scope.name} should be annotated with 1 source annotation")
+      else -> return parsingError("Value parameter ${scope.name} should be annotated with 1 source annotation, but was ${scope.parameter}")
     }
 
     fun body(annotationEntry: KtAnnotationEntry): Body? {
