@@ -5,6 +5,7 @@ import arrow.meta.plugin.testing.assertThis
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.funSpec
 import io.kotest.matchers.shouldBe
 import konnekt.*
 import java.lang.reflect.InvocationTargetException
@@ -41,6 +42,10 @@ class CodegenTest : FreeSpec({
     }
   }
 
+  Source.values().forEach {
+    include(annotationTest(it))
+  }
+
   "!method render" - {
     "ff" {
       val path = "/pets/{id}"
@@ -67,7 +72,51 @@ class CodegenTest : FreeSpec({
     }
   }
 
-  "interface render" - {
+  "functional tests" - {
+    "companion object required" - {
+      val declaration = """
+        |//metadebug
+        |$imports
+        |$prelude
+        |
+        |@Client
+        |interface SimpleClient {
+        |   @POST("/url")
+        |   suspend fun test(): String
+        |}
+      """.trimMargin()
+
+      "compiler error present" {
+        try {
+          assertThis(CompilerTest(
+              config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
+              code = { declaration.source },
+              assert = { failsWith { it.contains("SimpleClient".noCompanion)  } }
+          ))
+        } catch (e: InvocationTargetException) {
+          throw e.cause!!
+        }
+      }
+    }
+  }
+
+  "integration tests" - {
+
+    "sources test" {
+      assertThis(CompilerTest(
+          config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
+          code = { code.source },
+          assert = {
+            allOf(
+                "query_test()".source.evalsTo(Unit),
+                "body_test()".source.evalsTo(Unit),
+                "path_test()".source.evalsTo(Unit),
+                "header_test()".source.evalsTo(Unit),
+                "field_test()".source.evalsTo(Unit)
+            )
+          }
+      ))
+    }
 
     "!tt" {
       assertThis(CompilerTest(
@@ -77,7 +126,7 @@ class CodegenTest : FreeSpec({
       ))
     }
 
-    "integration test" {
+    "complex return type propagates" {
       val objectMapper = jacksonObjectMapper()
       val books = objectMapper.readValue<List<Book>>(resourceContent("books.json"))
       val book = objectMapper.readValue<Book>(resourceContent("book_1.json"))
@@ -135,50 +184,29 @@ class CodegenTest : FreeSpec({
         }
       }
     }
-
-    "companion object required" - {
-      val declaration = """
-        |//metadebug
-        |$imports
-        |$prelude
-        |
-        |@Client
-        |interface SimpleClient {
-        |   @POST("/url")
-        |   suspend fun test(): String
-        |}
-      """.trimMargin()
-
-      "compiler error present" {
-        try {
-          assertThis(CompilerTest(
-              config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
-              code = { declaration.source },
-              assert = { failsWith { it.contains("SimpleClient".noCompanion)  } }
-          ))
-        } catch (e: InvocationTargetException) {
-          throw e.cause!!
-        }
-      }
-    }
-
-    "sources test" {
-      assertThis(CompilerTest(
-          config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
-          code = { code.source },
-          assert = {
-            allOf(
-              "query_test()".source.evalsTo(Unit),
-              "body_test()".source.evalsTo(Unit),
-              "path_test()".source.evalsTo(Unit),
-              "header_test()".source.evalsTo(Unit),
-              "field_test()".source.evalsTo(Unit)
-            )
-          }
-      ))
-    }
   }
 })
+
+fun annotationTest(source: Source) = funSpec {
+  test("Plugin parses @${source.declaration.simpleName}") {
+    val functions = functions(source)
+    val code = """
+      |//metadebug
+      |$imports
+      |@Client
+      |interface Test {
+      | ${functions.joinToString("\n")}
+      | companion object
+      |}
+    """.trimMargin()
+
+    assertThis(CompilerTest(
+        config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
+        code = { code.source },
+        assert = { compiles }
+    ))
+  }
+}
 
 fun Any.resourceContent(file: String): String {
     return javaClass.classLoader.getResourceAsStream(file)?.reader()?.readText() ?: error("Resourse $file not found")

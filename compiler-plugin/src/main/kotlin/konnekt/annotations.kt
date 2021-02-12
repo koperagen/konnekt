@@ -18,6 +18,7 @@ import konnekt.prelude.Part
 import konnekt.prelude.Path
 import konnekt.prelude.Query
 import konnekt.prelude.Header
+import konnekt.prelude.HeaderMap
 
 val CLIENT_ANNOTATION_NAMES = setOf(Client::class.java.simpleName, Client::class.java.name)
 
@@ -29,6 +30,17 @@ val SOURCE_ANNOTATIONS = setOf(
     Part::class.java,
     Header::class.java
 )
+
+enum class Source(val declaration: Class<*>) {
+  BODY(Body::class.java),
+  QUERY(Query::class.java),
+  PART(Part::class.java),
+  FIELD(Field::class.java),
+  PATH(Path::class.java),
+  HEADER(Header::class.java);
+
+  val names: List<String> = listOf(declaration.simpleName, declaration.name)
+}
 
 val HEADERS_ANNOTATIONS = setOf(
     Headers::class.java

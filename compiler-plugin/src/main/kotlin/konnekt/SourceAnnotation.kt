@@ -72,7 +72,7 @@ private fun CompilerContext.refine(scope: ParameterScope): SourceAnnotation? {
                 val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
                 value?.let { Field(value) }
             }
-            2 -> withArgumentResolvingContext(annotationEntry.valueArguments, setOf("value")) {
+            2 -> withArgumentResolvingContext(annotationEntry.valueArguments, setOf("value", "encoded")) {
                 val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
                 val encoded = get("encoded", 1, defaultValue = true, converter = CompilerContext::constantBooleanOrNull)
                 if (encoded != null) {

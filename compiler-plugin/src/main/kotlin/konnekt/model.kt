@@ -77,10 +77,6 @@ class ParameterScope(
 
 class SourceAnnotationScope(val annotationEntry: KtAnnotationEntry, val source: Source)
 
-enum class Source {
-  BODY, QUERY, PART, FIELD, PATH, HEADER
-}
-
 fun sourceAnnotation(annotationEntry: KtAnnotationEntry): SourceAnnotationScope? {
   val source = when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
     null -> null
