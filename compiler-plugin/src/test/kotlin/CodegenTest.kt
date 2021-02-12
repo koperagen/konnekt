@@ -161,6 +161,22 @@ class CodegenTest : FreeSpec({
         }
       }
     }
+
+    "sources test" {
+      assertThis(CompilerTest(
+          config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
+          code = { code.source },
+          assert = {
+            allOf(
+              "query_test()".source.evalsTo(Unit),
+              "body_test()".source.evalsTo(Unit),
+              "path_test()".source.evalsTo(Unit),
+              "header_test()".source.evalsTo(Unit),
+              "field_test()".source.evalsTo(Unit)
+            )
+          }
+      ))
+    }
   }
 })
 
