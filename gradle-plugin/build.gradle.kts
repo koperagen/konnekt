@@ -13,4 +13,5 @@ repositories {
 dependencies {
   implementation(kotlin("stdlib"))
   implementation(gradleApi())
+  implementation("io.github.classgraph:classgraph:4.8.102")
 }
