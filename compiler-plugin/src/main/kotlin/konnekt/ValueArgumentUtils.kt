@@ -1,6 +1,7 @@
 package konnekt
 
 import arrow.meta.phases.CompilerContext
+import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtConstantExpression
 import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
@@ -23,13 +24,15 @@ internal fun String.toBooleanOrNull(): Boolean? {
 }
 
 fun <T> CompilerContext.withArgumentResolvingContext(
-    args: List<ValueArgument>,
+    annotation: KtAnnotationEntry,
     expectedNames: Set<String>,
     op: ArgumentResolvingContext.() -> T
 ): T? {
+    val args: List<ValueArgument> = annotation.valueArguments
     val context = ArgumentResolvingContext(args, this)
-        .takeIf { it.namedArgs.keys.all { it in expectedNames } }
-        ?: return parsingError("Annotation names should be ${expectedNames.joinToString()}.")
+    if (context.namedArgs.keys.any { it !in expectedNames }) {
+      return parsingError("Argument names of ${annotation.name} should be [${expectedNames.joinToString()}], but were [${context.namedArgs}].")
+    }
 
     return context.run(op)
 }

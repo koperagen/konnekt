@@ -2,17 +2,26 @@ package konnekt
 
 import arrow.meta.phases.CompilerContext
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.psiUtil.containingClass
 
 internal fun KtNamedFunction.verbs(ctx: CompilerContext): VerbAnnotationModel? {
   val verbAnnotations = annotationEntries.mapNotNull { verbAnnotation(it) }
   return when (verbAnnotations.size) {
-    0 -> ctx.parsingError("Client method should be annotated with some Verb Annotation", this)
+    0 -> ctx.parsingError(methodNotAnnotated(), this)
     1 -> {
       val scope = verbAnnotations.first()
       ctx.refine(scope)
     }
-    else -> ctx.parsingError("Client method should be annotated with exactly 1 Verb Annotation", this)
+    else -> ctx.parsingError(methodHasSeveralAnnotations(verbAnnotations), this)
   }
+}
+
+private fun KtNamedFunction.methodNotAnnotated(): String {
+  return "Method $name of ${containingClass()?.name} should be annotated with one of [${Source.values().joinToString(",") { it.declaration.simpleName }}]"
+}
+
+private fun KtNamedFunction.methodHasSeveralAnnotations(annotations: List<VerbAnnotationScope>): String {
+  return """Method $name of ${containingClass()?.name} should be annotated with one of [${Source.values().joinToString(",") { it.declaration.simpleName }}], but got ${annotations.size}: ${annotations.joinToString { it.annotation.name ?: "" }}"""
 }
 
 private fun CompilerContext.refine(scope: VerbAnnotationScope): VerbAnnotationModel? {

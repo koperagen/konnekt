@@ -26,11 +26,11 @@ private fun CompilerContext.refine(scope: ParameterScope): SourceAnnotation? {
 
     fun query(annotationEntry: KtAnnotationEntry): Query? {
         return when (annotationEntry.valueArguments.size) {
-            1 -> withArgumentResolvingContext(annotationEntry.valueArguments, setOf("value")) {
+            1 -> withArgumentResolvingContext(annotationEntry, setOf("value")) {
                 val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
                 value?.let { Query(value) }
             }
-            2 -> withArgumentResolvingContext(annotationEntry.valueArguments, setOf("value", "encoded")) {
+            2 -> withArgumentResolvingContext(annotationEntry, setOf("value", "encoded")) {
                 val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
                 val encoded = get("encoded", 1, defaultValue = true, converter = CompilerContext::constantBooleanOrNull)
                 if (encoded != null) {
@@ -45,11 +45,11 @@ private fun CompilerContext.refine(scope: ParameterScope): SourceAnnotation? {
 
     fun path(annotationEntry: KtAnnotationEntry): Path? {
         return when (annotationEntry.valueArguments.size) {
-            1 -> withArgumentResolvingContext(annotationEntry.valueArguments, setOf("value")) {
+            1 -> withArgumentResolvingContext(annotationEntry, setOf("value")) {
                 val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
                 value?.let { Path(value) }
             }
-            2 -> withArgumentResolvingContext(annotationEntry.valueArguments, setOf("value", "encoded")) {
+            2 -> withArgumentResolvingContext(annotationEntry, setOf("value", "encoded")) {
               val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
               val encoded = get("encoded", 1, defaultValue = true, converter = CompilerContext::constantBooleanOrNull)
               if (encoded != null) {
@@ -68,11 +68,11 @@ private fun CompilerContext.refine(scope: ParameterScope): SourceAnnotation? {
 
     fun field(annotationEntry: KtAnnotationEntry): Field? {
         return when (annotationEntry.valueArguments.size) {
-            1 -> withArgumentResolvingContext(annotationEntry.valueArguments, setOf("value")) {
+            1 -> withArgumentResolvingContext(annotationEntry, setOf("value")) {
                 val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
                 value?.let { Field(value) }
             }
-            2 -> withArgumentResolvingContext(annotationEntry.valueArguments, setOf("value", "encoded")) {
+            2 -> withArgumentResolvingContext(annotationEntry, setOf("value", "encoded")) {
                 val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
                 val encoded = get("encoded", 1, defaultValue = true, converter = CompilerContext::constantBooleanOrNull)
                 if (encoded != null) {
@@ -87,7 +87,7 @@ private fun CompilerContext.refine(scope: ParameterScope): SourceAnnotation? {
 
     fun header(annotationEntry: KtAnnotationEntry): Header? {
         return when (annotationEntry.valueArguments.size) {
-          1 -> withArgumentResolvingContext(annotationEntry.valueArguments, setOf("value")) {
+          1 -> withArgumentResolvingContext(annotationEntry, setOf("value")) {
             val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
             value?.let { Header(value) }
           }
