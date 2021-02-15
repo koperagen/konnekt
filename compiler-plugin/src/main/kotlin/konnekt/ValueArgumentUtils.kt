@@ -5,23 +5,8 @@ import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtConstantExpression
 import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
-import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.ValueArgument
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
-
-@Deprecated("Use constantStringOrNull() instead", level = DeprecationLevel.WARNING)
-internal fun List<KtValueArgument>.getStringOrNull(position: Int) =
-    getOrNull(position)?.text?.removeSurrounding("\"")
-
-@Deprecated("Use constantBooleanOrNull() instead", level = DeprecationLevel.WARNING)
-internal fun List<KtValueArgument>.getBooleanOrNull(position: Int) =
-    getOrNull(position)?.text?.toBooleanOrNull()
-
-internal val booleanValues = mapOf("true" to true, "false" to false)
-
-internal fun String.toBooleanOrNull(): Boolean? {
-  return booleanValues[this]
-}
 
 fun <T> CompilerContext.withArgumentResolvingContext(
     annotation: KtAnnotationEntry,
@@ -68,3 +53,5 @@ internal fun CompilerContext.constantBooleanOrNull(arg: ValueArgument): Boolean?
    booleanValues[it.text] ?: parsingError("Boolean argument should be simple literal 'true' or 'false'")
   }
 }
+
+internal val booleanValues = mapOf("true" to true, "false" to false)
