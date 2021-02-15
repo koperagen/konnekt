@@ -6,6 +6,7 @@ import arrow.meta.ide.testing.dsl.IdeTestSyntax
 import arrow.meta.ide.testing.env.IdeTestSetUp
 import arrow.meta.ide.testing.env.ideTest
 import arrow.meta.ide.testing.Source
+import arrow.meta.plugins.optics.internals.noCompanion
 import com.intellij.codeInspection.InspectionProfileEntry
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
