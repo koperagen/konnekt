@@ -113,10 +113,7 @@ fun KtAnnotated.hasAnnotation(
 ): Boolean {
   val names = annotationNames.toHashSet()
   val predicate: (KtAnnotationEntry) -> Boolean = {
-    it.typeReference
-        ?.typeElement
-        ?.safeAs<KtUserType>()
-        ?.referencedName in names
+    it.referencedName in names
   }
   return annotationEntries.any(predicate)
 }

@@ -31,7 +31,7 @@ fun <T> CompilerContext.withArgumentResolvingContext(
     val args: List<ValueArgument> = annotation.valueArguments
     val context = ArgumentResolvingContext(args, this)
     if (context.namedArgs.keys.any { it !in expectedNames }) {
-      return parsingError("Argument names of ${annotation.name} should be [${expectedNames.joinToString()}], but were [${context.namedArgs}].")
+      return parsingError("Argument names of ${annotation.referencedName} should be [${expectedNames.joinToString()}], but were [${context.namedArgs}].")
     }
 
     return context.run(op)
