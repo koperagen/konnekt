@@ -75,17 +75,17 @@ class ParameterScope(
   val type: KtTypeReference? = parameter.typeReference
 )
 
-class SourceAnnotationScope(val annotationEntry: KtAnnotationEntry, val source: Source)
+class SourceAnnotationScope(val annotationEntry: KtAnnotationEntry, val source: SourcesDeclaration)
 
 fun sourceAnnotation(annotationEntry: KtAnnotationEntry): SourceAnnotationScope? {
   val source = when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
     null -> null
-    "Path" -> Source.PATH
-    "Body" -> Source.BODY
-    "Query" -> Source.QUERY
-    "Part" -> Source.PART
-    "Header" -> Source.HEADER
-    "Field" -> Source.FIELD
+    "Path" -> SourcesDeclaration.PATH
+    "Body" -> SourcesDeclaration.BODY
+    "Query" -> SourcesDeclaration.QUERY
+    "Part" -> SourcesDeclaration.PART
+    "Header" -> SourcesDeclaration.HEADER
+    "Field" -> SourcesDeclaration.FIELD
     else -> null
   }
   return source?.let { SourceAnnotationScope(annotationEntry, source) }

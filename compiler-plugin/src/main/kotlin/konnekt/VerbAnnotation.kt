@@ -17,11 +17,11 @@ internal fun KtNamedFunction.verbs(ctx: CompilerContext): VerbAnnotationModel? {
 }
 
 private fun KtNamedFunction.methodNotAnnotated(): String {
-  return "Method $name of ${containingClass()?.name} should be annotated with one of [${Source.values().joinToString(",") { it.declaration.simpleName }}]"
+  return "Method $name of ${containingClass()?.name} should be annotated with one of [${VerbsDeclaration.values().joinToString(",") { it.declaration.simpleName }}]"
 }
 
 private fun KtNamedFunction.methodHasSeveralAnnotations(annotations: List<VerbAnnotationScope>): String {
-  return """Method $name of ${containingClass()?.name} should be annotated with one of [${Source.values().joinToString(",") { it.declaration.simpleName }}], but got ${annotations.size}: ${annotations.joinToString { it.annotation.name ?: "" }}"""
+  return """Method $name of ${containingClass()?.name} should be annotated with one of [${VerbsDeclaration.values().joinToString(",") { it.declaration.simpleName }}], but got ${annotations.size}: ${annotations.joinToString { it.annotation.name ?: "" }}"""
 }
 
 private fun CompilerContext.refine(scope: VerbAnnotationScope): VerbAnnotationModel? {

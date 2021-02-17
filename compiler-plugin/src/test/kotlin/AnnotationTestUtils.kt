@@ -1,4 +1,5 @@
-import konnekt.Source
+import konnekt.SourcesDeclaration
+import konnekt.names
 
 val stringLiterals = listOf(""""p"""", "\"\"")
 
@@ -26,28 +27,28 @@ fun List<String>.named(name: String): List<Argument> = flatMap {
   listOf(Argument(it, null), Argument(it, name))
 }
 
-fun annotationVariants(it: Source): List<String> {
+fun annotationVariants(it: SourcesDeclaration): List<String> {
   return when (it) {
-    Source.BODY -> it.names.map { "@$it" }
-    Source.QUERY, Source.FIELD, Source.PATH -> (it.names product stringLiterals.named("value"))
+    SourcesDeclaration.BODY -> it.names.map { "@$it" }
+    SourcesDeclaration.QUERY, SourcesDeclaration.FIELD, SourcesDeclaration.PATH -> (it.names product stringLiterals.named("value"))
         .let { oneArg ->
           val stringOnly = oneArg.map { (name, str) -> "@$name($str)" }
           val complete = (oneArg product booleanLiterals.named("encoded")).map { (name, str, bool) -> "@$name($str, $bool)" }
           stringOnly + complete
         }
-    Source.PART, Source.HEADER -> (it.names product stringLiterals.named("value"))
+    SourcesDeclaration.PART, SourcesDeclaration.HEADER -> (it.names product stringLiterals.named("value"))
         .map { (name, str) -> "@$name($str)" }
   }
 }
 
-fun functions(source: Source): List<String> {
+fun functions(source: SourcesDeclaration): List<String> {
   val annotations = annotationVariants(source)
   return when (source) {
-    Source.PATH -> annotations.mapIndexed { i, annotation ->
+    SourcesDeclaration.PATH -> annotations.mapIndexed { i, annotation ->
       """|@GET("/test/{p}")
          |suspend fun test${source.name}$i($annotation r: Int): String""".trimMargin()
     }
-    Source.BODY, Source.QUERY, Source.PART, Source.FIELD, Source.HEADER -> annotations.mapIndexed { i, annotation ->
+    SourcesDeclaration.BODY, SourcesDeclaration.QUERY, SourcesDeclaration.PART, SourcesDeclaration.FIELD, SourcesDeclaration.HEADER -> annotations.mapIndexed { i, annotation ->
       """|@GET("/test")
          |suspend fun test${source.name}$i($annotation r: Int): String""".trimMargin()
     }

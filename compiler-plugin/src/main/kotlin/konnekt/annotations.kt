@@ -22,6 +22,12 @@ import konnekt.prelude.HeaderMap
 
 val CLIENT_ANNOTATION_NAMES = setOf(Client::class.java.simpleName, Client::class.java.name)
 
+interface AnnotationDeclaration {
+  val declaration: Class<*>
+}
+
+val AnnotationDeclaration.names get() = listOf(declaration.simpleName, declaration.name)
+
 val SOURCE_ANNOTATIONS = setOf(
     Path::class.java,
     Body::class.java,
@@ -31,20 +37,22 @@ val SOURCE_ANNOTATIONS = setOf(
     Header::class.java
 )
 
-enum class Source(val declaration: Class<*>) {
+enum class SourcesDeclaration(override val declaration: Class<*>): AnnotationDeclaration {
   BODY(Body::class.java),
   QUERY(Query::class.java),
   PART(Part::class.java),
   FIELD(Field::class.java),
   PATH(Path::class.java),
   HEADER(Header::class.java);
-
-  val names: List<String> = listOf(declaration.simpleName, declaration.name)
 }
 
 val HEADERS_ANNOTATIONS = setOf(
     Headers::class.java
 )
+
+object HeadersDeclaration : AnnotationDeclaration {
+  override val declaration = Headers::class.java
+}
 
 val ENCODING_ANNOTATIONS = setOf(
     Multipart::class.java,
@@ -61,3 +69,14 @@ val VERB_ANNOTATIONS = setOf(
     HEAD::class.java,
     OPTIONS::class.java
 )
+
+enum class VerbsDeclaration(override val declaration: Class<*>): AnnotationDeclaration {
+  Http(HTTP::class.java),
+  Get(GET::class.java),
+  Post(POST::class.java),
+  Put(PUT::class.java),
+  Patch(PATCH::class.java),
+  Delete(DELETE::class.java),
+  Head(HEAD::class.java),
+  Options(OPTIONS::class.java)
+}

@@ -42,7 +42,7 @@ class CodegenTest : FreeSpec({
     }
   }
 
-  Source.values().forEach {
+  SourcesDeclaration.values().forEach {
     include(annotationTest(it))
   }
 
@@ -187,7 +187,7 @@ class CodegenTest : FreeSpec({
   }
 })
 
-fun annotationTest(source: Source) = funSpec {
+fun annotationTest(source: SourcesDeclaration) = funSpec {
   test("Plugin parses @${source.declaration.simpleName}") {
     val functions = functions(source)
     val code = """

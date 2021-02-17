@@ -96,11 +96,11 @@ private fun CompilerContext.refine(scope: ParameterScope): SourceAnnotation? {
     }
 
     return when (annotation.source) {
-        Source.BODY -> body(annotation.annotationEntry)
-        Source.QUERY -> query(annotation.annotationEntry)
-        Source.PART -> part(annotation.annotationEntry)
-        Source.FIELD -> field(annotation.annotationEntry)
-        Source.PATH -> path(annotation.annotationEntry)
-        Source.HEADER -> header(annotation.annotationEntry)
+        SourcesDeclaration.BODY -> body(annotation.annotationEntry)
+        SourcesDeclaration.QUERY -> query(annotation.annotationEntry)
+        SourcesDeclaration.PART -> part(annotation.annotationEntry)
+        SourcesDeclaration.FIELD -> field(annotation.annotationEntry)
+        SourcesDeclaration.PATH -> path(annotation.annotationEntry)
+        SourcesDeclaration.HEADER -> header(annotation.annotationEntry)
     }
 }
