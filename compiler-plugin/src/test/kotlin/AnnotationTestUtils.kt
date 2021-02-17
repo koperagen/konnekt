@@ -1,3 +1,4 @@
+import konnekt.HeadersDeclaration
 import konnekt.SourcesDeclaration
 import konnekt.names
 
@@ -52,5 +53,20 @@ fun functions(source: SourcesDeclaration): List<String> {
       """|@GET("/test")
          |suspend fun test${source.name}$i($annotation r: Int): String""".trimMargin()
     }
+  }
+}
+
+val varargsHeaders = listOf(listOf("ff"))
+
+fun headerAnnotationVariants(): List<String> {
+  return (HeadersDeclaration.names product varargsHeaders).map { (name, args) -> "@$name(${args.joinToString(", "){ "\"$it\"" } })" }
+}
+
+fun headerFunctions(): List<String> {
+  val annotations = headerAnnotationVariants()
+  return annotations.mapIndexed { i, annotation ->
+    """|@GET("/test")
+       |$annotation
+       |suspend fun testHEADERS_$i(): String""".trimMargin()
   }
 }

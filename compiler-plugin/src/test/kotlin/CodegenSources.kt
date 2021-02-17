@@ -22,6 +22,7 @@ val imports = """
   import java.io.File
   import java.time.LocalDateTime
   import konnekt.prelude.*
+  import konnekt.prelude.Headers
 """.trimIndent()
 
 val classesStub = """

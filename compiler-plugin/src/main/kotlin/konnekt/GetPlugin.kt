@@ -78,15 +78,7 @@ fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
   val name = nameAsSafeName.identifier
   val verb = verbs(ctx) ?: return null
 
-  val headers = annotationEntries
-      .mapNotNull {
-        val name = it.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName
-        if (name != null && name in headersAnnotations) {
-          toHeaderAnnotation(it)
-        } else {
-          null
-        }
-      }
+  val headers = headers(ctx)
 
   val encoding = annotationEntries
       .mapNotNull {
@@ -112,14 +104,6 @@ fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
 fun <T> CompilerContext.parsingError(message: String, element: KtAnnotated? = null): T? {
   ctx.messageCollector?.report(CompilerMessageSeverity.ERROR, message, null)
   return null
-}
-
-fun toHeaderAnnotation(annotationEntry: KtAnnotationEntry): HeaderAnnotation {
-  val headers = annotationEntry.valueArgumentList
-      ?.arguments
-      ?.map { it.text.removeSurrounding("\"") }
-      ?: emptyList()
-  return HeaderAnnotation(headers)
 }
 
 fun isKonnektClient(ktClass: KtClass): Boolean = ktClass.isInterface() && ktClass.hasAnnotation(*CLIENT_ANNOTATION_NAMES.toTypedArray())

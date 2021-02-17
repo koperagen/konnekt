@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 data class Method(
   val name: String,
   val httpVerb: VerbAnnotationModel,
-  val headers: List<HeaderAnnotation>,
+  val headers: HeadersAnnotation?,
   val encoding: MimeEncoding? = null,
   val params: List<Parameter>,
   val returnType: Type

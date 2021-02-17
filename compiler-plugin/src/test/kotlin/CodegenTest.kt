@@ -4,8 +4,10 @@ import arrow.meta.plugin.testing.Dependency
 import arrow.meta.plugin.testing.assertThis
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.funSpec
+import io.kotest.core.spec.style.stringSpec
 import io.kotest.matchers.shouldBe
 import konnekt.*
 import java.lang.reflect.InvocationTargetException
@@ -42,9 +44,16 @@ class CodegenTest : FreeSpec({
     }
   }
 
+  fun annotationTest(source: SourcesDeclaration): TestFactory {
+    val functions = functions(source)
+    return "Plugin parses @${source.declaration.simpleName}".annotationTest(functions)
+  }
+
   SourcesDeclaration.values().forEach {
     include(annotationTest(it))
   }
+
+  include("Plugin parses @Headers".annotationTest(functions = headerFunctions()))
 
   "!method render" - {
     "ff" {
@@ -53,7 +62,7 @@ class CodegenTest : FreeSpec({
       val method = Method(
           name = "getPet",
           httpVerb = VerbAnnotationModel.get(path),
-          headers = emptyList(),
+          headers = HeadersAnnotation(emptyList()),
           encoding = null,
           params = listOf(konnekt.Parameter(
               annotation = Path(placeholder = "id", encoded = false),
@@ -187,9 +196,8 @@ class CodegenTest : FreeSpec({
   }
 })
 
-fun annotationTest(source: SourcesDeclaration) = funSpec {
-  test("Plugin parses @${source.declaration.simpleName}") {
-    val functions = functions(source)
+fun String.annotationTest(functions: List<String>) = stringSpec {
+  this@annotationTest {
     val code = """
       |//metadebug
       |$imports
