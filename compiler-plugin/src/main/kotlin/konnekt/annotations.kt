@@ -26,7 +26,7 @@ interface AnnotationDeclaration {
   val declaration: Class<*>
 }
 
-val AnnotationDeclaration.names get() = listOf(declaration.simpleName, declaration.name)
+val AnnotationDeclaration.names: List<String> get() = listOf(declaration.simpleName, declaration.name)
 
 val SOURCE_ANNOTATIONS = setOf(
     Path::class.java,

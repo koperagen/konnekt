@@ -111,8 +111,6 @@ data class VerbAnnotationModel(val verb: String, val path: HttpPath) {
   }
 }
 
-data class HeaderAnnotation(val headers: List<String>)
-
 enum class MimeEncoding {
   MULTIPART, FORM_URL_ENCODED
 }
