@@ -39,6 +39,7 @@ dependencies {
 
   testImplementation("junit:junit:4.13") // only for SampleTest
   testImplementation("io.kotest:kotest-framework-api:4.3.1")
+  testImplementation("io.kotest:kotest-property:4.3.1")
   testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.1")
 
   // Required for integration test of plugin

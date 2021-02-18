@@ -1,3 +1,10 @@
+import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
+import io.kotest.property.arbitrary.bind
+import io.kotest.property.arbitrary.list
+import io.kotest.property.arbitrary.take
+import io.kotest.property.exhaustive.azstring
+import io.kotest.property.exhaustive.collection
 import konnekt.HeadersDeclaration
 import konnekt.SourcesDeclaration
 import konnekt.names
@@ -56,17 +63,19 @@ fun functions(source: SourcesDeclaration): List<String> {
   }
 }
 
-val varargsHeaders = listOf(listOf("ff"))
-
-fun headerAnnotationVariants(): List<String> {
-  return (HeadersDeclaration.names product varargsHeaders).map { (name, args) -> "@$name(${args.joinToString(", "){ "\"$it\"" } })" }
+val headerAnnotationVariants = Arb.bind(
+    Exhaustive.collection(HeadersDeclaration.names),
+    Arb.list(Exhaustive.azstring(1..10).toArb())
+) { name, args ->
+  val varargs = args.joinToString(", "){ "\"$it\"" }
+  "@$name($varargs)"
 }
 
-fun headerFunctions(): List<String> {
-  val annotations = headerAnnotationVariants()
+fun headerFunctions(): Iterable<String> {
+  val annotations = headerAnnotationVariants.take(50)
   return annotations.mapIndexed { i, annotation ->
     """|@GET("/test")
        |$annotation
        |suspend fun testHEADERS_$i(): String""".trimMargin()
-  }
+  }.asIterable()
 }

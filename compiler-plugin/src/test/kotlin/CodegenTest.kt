@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.core.spec.style.funSpec
 import io.kotest.core.spec.style.stringSpec
 import io.kotest.matchers.shouldBe
 import konnekt.*
@@ -196,7 +195,7 @@ class CodegenTest : FreeSpec({
   }
 })
 
-fun String.annotationTest(functions: List<String>) = stringSpec {
+fun String.annotationTest(functions: Iterable<String>) = stringSpec {
   this@annotationTest {
     val code = """
       |//metadebug
@@ -207,6 +206,10 @@ fun String.annotationTest(functions: List<String>) = stringSpec {
       | companion object
       |}
     """.trimMargin()
+
+    // Syntactically wrong code doesn't reach transformation phase
+    // thus won't be printed
+    println(code)
 
     assertThis(CompilerTest(
         config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
