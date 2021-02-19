@@ -93,6 +93,31 @@ class CodegenTest : FreeSpec({
     }
   }
 
+  "Reference expression in string argument cause error for @Headers" {
+    val declaration = """
+        |//metadebug
+        |$imports
+        |$prelude
+        |
+        |const val constString = "foo"
+        |
+        |@Client
+        |interface Test {
+        |   @Headers(constString)
+        |   @GET("/test")
+        |   suspend fun test(): String 
+        |   
+        |   companion object
+        |}
+      """.trimMargin()
+
+    assertThis(CompilerTest(
+        config = { konnektConfig },
+        code = { declaration.source },
+        assert = { failsWith { it.contains("Reference expression is not yet supported for konnekt annotations") } }
+    ))
+  }
+
   "functional tests" - {
 
     "companion object required" - {
@@ -119,10 +144,11 @@ class CodegenTest : FreeSpec({
           throw e.cause!!
         }
       }
+    }
 
-      "Conflicting annotations" - {
-        "two mime encodings cause error" {
-          val declaration = """
+    "Conflicting annotations" - {
+      "two mime encodings cause error" {
+        val declaration = """
           |//metadebug
           |$imports
           |$prelude
@@ -138,19 +164,41 @@ class CodegenTest : FreeSpec({
           |}
         """.trimMargin()
 
-          assertThis(CompilerTest(
-              config = { konnektConfig },
-              code = { declaration.source },
-              assert = {
-                failsWith {
-                  it.contains("should be annotated with one") &&
-                      it.contains(MimeEncodingsDeclaration.MULTIPART.declaration.simpleName) &&
-                      it.contains(MimeEncodingsDeclaration.FORM_URL_ENCODED.declaration.simpleName)
-                }
+        assertThis(CompilerTest(
+            config = { konnektConfig },
+            code = { declaration.source },
+            assert = {
+              failsWith {
+                it.contains("should be annotated with one") &&
+                    it.contains(MimeEncodingsDeclaration.MULTIPART.declaration.simpleName) &&
+                    it.contains(MimeEncodingsDeclaration.FORM_URL_ENCODED.declaration.simpleName)
               }
-          ))
+            }
+        ))
+      }
 
-        }
+      "multiple @Headers cause error" {
+        val declaration = """
+          |//metadebug
+          |$imports
+          |$prelude
+          |
+          |@Client
+          |interface Test {
+          |   @GET("/test")
+          |   @Headers("")
+          |   @Headers("")
+          |   suspend fun test(): String
+          |   
+          |   companion object
+          |}
+        """.trimMargin()
+
+        assertThis(CompilerTest(
+            config = { konnektConfig },
+            code = { declaration.source },
+            assert = { failsWith { it.contains("Repeating @Headers annotation is not yet supported") } }
+        ))
       }
     }
   }

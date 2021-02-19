@@ -7,13 +7,12 @@ import org.jetbrains.kotlin.psi.KtUserType
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 fun KtNamedFunction.headers(ctx: CompilerContext): HeadersAnnotation? {
-  val a = annotationEntries.mapNotNull {
-    headersAnnotation(it)
-  }
-  return when (a.size) {
+  val scoped = annotationEntries.mapNotNull { headersAnnotation(it) }
+
+  return when (scoped.size) {
     0 -> null
-    1 -> ctx.refine(a[0])
-    else -> TODO()
+    1 -> ctx.refine(scoped[0])
+    else -> ctx.parsingError("Repeating @Headers annotation is not yet supported")
   }
 }
 

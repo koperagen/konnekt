@@ -4,6 +4,7 @@ import arrow.meta.phases.CompilerContext
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtConstantExpression
 import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry
+import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.ValueArgument
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
@@ -39,12 +40,16 @@ fun <T> ArgumentResolvingContext.get(name: String, position: Int, defaultValue: 
 }
 
 internal fun CompilerContext.constantStringOrNull(arg: ValueArgument): String? {
-    return arg.getArgumentExpression()?.safeAs<KtStringTemplateExpression>()?.let {
-        when (it.entries.size) {
-            0 -> ""
-            1 -> it.entries.single().safeAs<KtLiteralStringTemplateEntry>()?.text
-            else -> parsingError("String argument should be simple literal string without interpolation")
+    return when(val expr = arg.getArgumentExpression()) {
+      is KtStringTemplateExpression -> {
+        when (expr.entries.size) {
+          0 -> ""
+          1 -> expr.entries.single().safeAs<KtLiteralStringTemplateEntry>()?.text
+          else -> parsingError("String argument should be simple literal string without interpolation")
         }
+      }
+      is KtNameReferenceExpression -> parsingError("Reference expression is not yet supported for konnekt annotations")
+      else -> parsingError("String argument should be simple literal string without interpolation")
     }
 }
 
