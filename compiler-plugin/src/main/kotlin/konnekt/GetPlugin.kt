@@ -66,8 +66,6 @@ fun KtNamedFunction.generateDefinition(ctx: CompilerContext, func: NamedFunction
   return extractData(ctx)?.render()
 }
 
-val headersAnnotations = setOf("Headers")
-
 fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
   val name = nameAsSafeName.identifier
   val verb = verbs(ctx) ?: return null
