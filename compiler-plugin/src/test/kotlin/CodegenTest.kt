@@ -1,4 +1,5 @@
 import arrow.meta.plugin.testing.CompilerTest
+import arrow.meta.plugin.testing.Config
 import arrow.meta.plugin.testing.ConfigSyntax
 import arrow.meta.plugin.testing.Dependency
 import arrow.meta.plugin.testing.assertThis
@@ -10,6 +11,9 @@ import io.kotest.core.spec.style.stringSpec
 import io.kotest.matchers.shouldBe
 import konnekt.*
 import java.lang.reflect.InvocationTargetException
+
+private val CompilerTest.Companion.konnektConfig: List<Config>
+  get() = listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies)
 
 @Suppress("unused")
 class CodegenTest : FreeSpec({
@@ -90,6 +94,7 @@ class CodegenTest : FreeSpec({
   }
 
   "functional tests" - {
+
     "companion object required" - {
       val declaration = """
         |//metadebug
@@ -106,12 +111,45 @@ class CodegenTest : FreeSpec({
       "compiler error present" {
         try {
           assertThis(CompilerTest(
-              config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
+              config = { konnektConfig },
               code = { declaration.source },
               assert = { failsWith { it.contains("SimpleClient".noCompanion)  } }
           ))
         } catch (e: InvocationTargetException) {
           throw e.cause!!
+        }
+      }
+
+      "Conflicting annotations" - {
+        "two mime encodings cause error" {
+          val declaration = """
+          |//metadebug
+          |$imports
+          |$prelude
+          |
+          |@Client
+          |interface Test {
+          |   @FormUrlEncoded
+          |   @Multipart
+          |   @GET("/test")
+          |   suspend fun test(): String
+          |   
+          |   companion object
+          |}
+        """.trimMargin()
+
+          assertThis(CompilerTest(
+              config = { konnektConfig },
+              code = { declaration.source },
+              assert = {
+                failsWith {
+                  it.contains("should be annotated with one") &&
+                      it.contains(MimeEncodingsDeclaration.MULTIPART.declaration.simpleName) &&
+                      it.contains(MimeEncodingsDeclaration.FORM_URL_ENCODED.declaration.simpleName)
+                }
+              }
+          ))
+
         }
       }
     }
