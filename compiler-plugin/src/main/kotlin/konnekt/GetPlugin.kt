@@ -15,8 +15,6 @@ import org.jetbrains.kotlin.psi.KtAnnotated
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.KtUserType
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 class KonnektPlugin : Meta {
   override fun intercept(ctx: CompilerContext): List<CliPlugin> =
@@ -70,31 +68,13 @@ fun KtNamedFunction.generateDefinition(ctx: CompilerContext, func: NamedFunction
 
 val headersAnnotations = setOf("Headers")
 
-val multipartAnnotation = "Multipart"
-
-val formUrlEncodedAnnotation = "FormUrlEncoded"
-
 fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
   val name = nameAsSafeName.identifier
   val verb = verbs(ctx) ?: return null
 
   val headers = headers(ctx)
 
-  val encoding = annotationEntries
-      .mapNotNull {
-        val name = it.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName
-        when (name) {
-          multipartAnnotation -> MimeEncoding.MULTIPART
-          formUrlEncodedAnnotation -> MimeEncoding.FORM_URL_ENCODED
-          else -> null
-        }
-      }.let {
-        when (it.size) {
-          0 -> null
-          1 -> it[0]
-          else -> error("Function $nameAsSafeName annotation entries $annotationEntries contains multiple mime encoding items. Specify 0 or 1 encoding")
-        }
-      }
+  val encoding = mimeEncoding(ctx)
 
   val parameters = parameters(ctx) ?: return null
   val returnType = typeReference?.text ?: TODO("Handle return type absence")

@@ -59,6 +59,10 @@ val ENCODING_ANNOTATIONS = setOf(
     FormUrlEncoded::class.java
 )
 
+enum class MimeEncodingsDeclaration(override val declaration: Class<*>) : AnnotationDeclaration {
+  MULTIPART(Multipart::class.java), FORM_URL_ENCODED(FormUrlEncoded::class.java)
+}
+
 val VERB_ANNOTATIONS = setOf(
     HTTP::class.java,
     GET::class.java,

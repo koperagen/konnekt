@@ -55,19 +55,6 @@ enum class Verb {
   GET, DELETE, HEAD, OPTIONS, PATCH, POST, PUT, HTTP;
 }
 
-class MimeEncodingScope(annotationEntry: KtAnnotationEntry, encoding: MimeEncoding)
-
-fun mimeEncoding(annotationEntry: KtAnnotationEntry): MimeEncodingScope? {
-  val name = annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName
-  return when (name) {
-    multipartAnnotation -> MimeEncoding.MULTIPART
-    formUrlEncodedAnnotation -> MimeEncoding.FORM_URL_ENCODED
-    else -> null
-  }?.let { encoding ->
-    MimeEncodingScope(annotationEntry, encoding)
-  }
-}
-
 class ParameterScope(
   val parameter: KtParameter,
   val sourceAnnotations: List<SourceAnnotationScope> = parameter.annotationEntries.mapNotNull { sourceAnnotation(it) },
@@ -111,9 +98,12 @@ data class VerbAnnotationModel(val verb: String, val path: HttpPath) {
   }
 }
 
-enum class MimeEncoding {
-  MULTIPART, FORM_URL_ENCODED
-}
+sealed class MimeEncoding
+
+object FormUrlEncoded : MimeEncoding()
+
+object Multipart : MimeEncoding()
+
 
 data class Parameter(
   val annotation: SourceAnnotation,
