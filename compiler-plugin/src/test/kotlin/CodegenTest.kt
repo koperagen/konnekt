@@ -54,6 +54,15 @@ class CodegenTest : FreeSpec({
 
   include("Plugin parses @Headers".annotationTest(functions = headerFunctions()))
 
+  fun annotationTest(encoding: MimeEncodingsDeclaration): TestFactory {
+    val functions = mimeEncodingFunctions(encoding)
+    return "Plugin parses @${encoding.declaration.simpleName}".annotationTest(functions)
+  }
+
+  MimeEncodingsDeclaration.values().forEach {
+    include(annotationTest(it))
+  }
+
   "!method render" - {
     "ff" {
       val path = "/pets/{id}"

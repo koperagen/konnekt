@@ -6,6 +6,7 @@ import io.kotest.property.arbitrary.take
 import io.kotest.property.exhaustive.azstring
 import io.kotest.property.exhaustive.collection
 import konnekt.HeadersDeclaration
+import konnekt.MimeEncodingsDeclaration
 import konnekt.SourcesDeclaration
 import konnekt.names
 
@@ -78,4 +79,13 @@ fun headerFunctions(): Iterable<String> {
        |$annotation
        |suspend fun testHEADERS_$i(): String""".trimMargin()
   }.asIterable()
+}
+
+fun mimeEncodingFunctions(encoding: MimeEncodingsDeclaration): Iterable<String> {
+  val annotations = encoding.names.map { "@$it" }
+  return annotations.mapIndexed { i, annotation ->
+    """|$annotation
+       |@GET("/test")
+       |suspend fun testMIME_ENCODING_$i(): String""".trimMargin()
+  }
 }
