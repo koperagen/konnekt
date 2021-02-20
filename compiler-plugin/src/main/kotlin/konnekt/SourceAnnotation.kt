@@ -3,6 +3,10 @@ package konnekt
 import arrow.meta.phases.CompilerContext
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtParameter
+import org.jetbrains.kotlin.psi.KtTypeReference
+import org.jetbrains.kotlin.psi.KtUserType
+import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 fun KtNamedFunction.parameters(ctx: CompilerContext): List<Parameter>? {
     val params = valueParameters.map { ParameterScope(it) }
@@ -11,6 +15,29 @@ fun KtNamedFunction.parameters(ctx: CompilerContext): List<Parameter>? {
         val source = ctx.refine(it) ?: return null
         Parameter(source, it.name, type)
     }
+}
+
+class ParameterScope(
+    val parameter: KtParameter,
+    val sourceAnnotations: List<SourceAnnotationScope> = parameter.annotationEntries.mapNotNull { sourceAnnotation(it) },
+    val name: String = parameter.nameAsSafeName.identifier,
+    val type: KtTypeReference? = parameter.typeReference
+)
+
+class SourceAnnotationScope(val annotationEntry: KtAnnotationEntry, val source: SourcesDeclaration)
+
+fun sourceAnnotation(annotationEntry: KtAnnotationEntry): SourceAnnotationScope? {
+  val source = when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
+    null -> null
+    "Path" -> SourcesDeclaration.PATH
+    "Body" -> SourcesDeclaration.BODY
+    "Query" -> SourcesDeclaration.QUERY
+    "Part" -> SourcesDeclaration.PART
+    "Header" -> SourcesDeclaration.HEADER
+    "Field" -> SourcesDeclaration.FIELD
+    else -> null
+  }
+  return source?.let { SourceAnnotationScope(annotationEntry, source) }
 }
 
 private fun CompilerContext.refine(scope: ParameterScope): SourceAnnotation? {

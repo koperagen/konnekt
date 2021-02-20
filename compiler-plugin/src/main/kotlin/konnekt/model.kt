@@ -1,16 +1,7 @@
 package konnekt
 
-import arrow.meta.phases.analysis.ElementScope
-import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
-import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtTypeReference
-import org.jetbrains.kotlin.psi.KtUserType
-import org.jetbrains.kotlin.psi.KtValueArgument
-import org.jetbrains.kotlin.psi.addRemoveModifier.addModifier
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 data class Method(
   val name: String,
@@ -30,52 +21,8 @@ class MethodScope(
   val returnType: KtTypeReference? = function.typeReference
 )
 
-class VerbAnnotationScope(
-  val annotation: KtAnnotationEntry,
-  val verb: Verb,
-  val arguments: List<KtValueArgument> = annotation.valueArgumentList?.arguments ?: emptyList()
-)
-
-fun verbAnnotation(annotationEntry: KtAnnotationEntry): VerbAnnotationScope? {
-  val verb =  when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
-    "GET" -> Verb.GET
-    "DELETE" -> Verb.DELETE
-    "HEAD" -> Verb.HEAD
-    "OPTIONS" -> Verb.OPTIONS
-    "PATCH" -> Verb.PATCH
-    "POST" -> Verb.POST
-    "PUT" -> Verb.PUT
-    "HTTP" -> Verb.HTTP
-    else -> null
-  }
-  return verb?.let { VerbAnnotationScope(annotationEntry, it) }
-}
-
 enum class Verb {
   GET, DELETE, HEAD, OPTIONS, PATCH, POST, PUT, HTTP;
-}
-
-class ParameterScope(
-  val parameter: KtParameter,
-  val sourceAnnotations: List<SourceAnnotationScope> = parameter.annotationEntries.mapNotNull { sourceAnnotation(it) },
-  val name: String = parameter.nameAsSafeName.identifier,
-  val type: KtTypeReference? = parameter.typeReference
-)
-
-class SourceAnnotationScope(val annotationEntry: KtAnnotationEntry, val source: SourcesDeclaration)
-
-fun sourceAnnotation(annotationEntry: KtAnnotationEntry): SourceAnnotationScope? {
-  val source = when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
-    null -> null
-    "Path" -> SourcesDeclaration.PATH
-    "Body" -> SourcesDeclaration.BODY
-    "Query" -> SourcesDeclaration.QUERY
-    "Part" -> SourcesDeclaration.PART
-    "Header" -> SourcesDeclaration.HEADER
-    "Field" -> SourcesDeclaration.FIELD
-    else -> null
-  }
-  return source?.let { SourceAnnotationScope(annotationEntry, source) }
 }
 
 data class VerbAnnotationModel(val verb: String, val path: HttpPath) {
@@ -147,32 +94,3 @@ data class Field(val value: String, val encoded: Boolean = false) : SourceAnnota
 
 // TODO HeaderMap
 data class Header(val value: String) : SourceAnnotation("Header")
-
-fun Method.render(): String {
-  fun List<Parameter>.render() = joinToString { "${it.name}: ${it.type}" }
-
-  return """
-    override suspend fun $name(${params.render()}): $returnType {
-        return client.${httpVerb.verb.toLowerCase()}(path = "${substituteParams(httpVerb.path, params.filterPaths())}") {
-            ${params.filterQueries().joinToString("\n") {
-                it.render()
-              }
-            }
-        }
-    }
-    """.trimIndent()
-}
-
-fun ElementScope.render(method: Method): NamedFunction = method.render().function.apply {
-  addModifier(owner = value, modifier = KtTokens.OVERRIDE_KEYWORD)
-}
-
-fun List<Parameter>.filterQueries(): List<QueryParameter> = mapNotNull { parameter ->
-  (parameter.annotation as? Query)?.let { annotation -> TypedParameter(annotation, parameter.name, parameter.type) }
-}
-
-fun List<Parameter>.filterPaths(): List<PathParameter> = mapNotNull { parameter ->
-  parameter.annotation.safeAs<Path>()?.let { annotation -> TypedParameter(annotation, parameter.name, parameter.type) }
-}
-
-fun TypedParameter<Query>.render() = """parameter("${annotation.value}", $name)"""

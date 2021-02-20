@@ -1,8 +1,12 @@
 package konnekt
 
 import arrow.meta.phases.CompilerContext
+import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtUserType
+import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
+import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 internal fun KtNamedFunction.verbs(ctx: CompilerContext): VerbAnnotationModel? {
   val verbAnnotations = annotationEntries.mapNotNull { verbAnnotation(it) }
@@ -22,6 +26,27 @@ private fun KtNamedFunction.methodNotAnnotated(): String {
 
 private fun KtNamedFunction.methodHasSeveralAnnotations(annotations: List<VerbAnnotationScope>): String {
   return """Method $name of ${containingClass()?.name} should be annotated with one of [${VerbsDeclaration.values().joinToString(",") { it.declaration.simpleName }}], but got ${annotations.size}: ${annotations.joinToString { it.annotation.name ?: "" }}"""
+}
+
+class VerbAnnotationScope(
+    val annotation: KtAnnotationEntry,
+    val verb: Verb,
+    val arguments: List<KtValueArgument> = annotation.valueArgumentList?.arguments ?: emptyList()
+)
+
+fun verbAnnotation(annotationEntry: KtAnnotationEntry): VerbAnnotationScope? {
+  val verb =  when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
+    "GET" -> Verb.GET
+    "DELETE" -> Verb.DELETE
+    "HEAD" -> Verb.HEAD
+    "OPTIONS" -> Verb.OPTIONS
+    "PATCH" -> Verb.PATCH
+    "POST" -> Verb.POST
+    "PUT" -> Verb.PUT
+    "HTTP" -> Verb.HTTP
+    else -> null
+  }
+  return verb?.let { VerbAnnotationScope(annotationEntry, it) }
 }
 
 private fun CompilerContext.refine(scope: VerbAnnotationScope): VerbAnnotationModel? {
