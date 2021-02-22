@@ -9,6 +9,8 @@ import konnekt.HeadersDeclaration
 import konnekt.MimeEncodingsDeclaration
 import konnekt.SourcesDeclaration
 import konnekt.names
+import konnekt.prelude.FormUrlEncoded
+import konnekt.prelude.Multipart
 
 val stringLiterals = listOf(""""p"""", "\"\"")
 
@@ -50,6 +52,15 @@ fun annotationVariants(it: SourcesDeclaration): List<String> {
   }
 }
 
+private fun SourcesDeclaration.optInAnnotation(): String {
+  val name = when (this) {
+    SourcesDeclaration.PART -> Multipart::class.java.simpleName
+    SourcesDeclaration.FIELD -> FormUrlEncoded::class.java.simpleName
+    else -> null
+  }
+  return name?.let { "@$it" } ?: ""
+}
+
 fun functions(source: SourcesDeclaration): List<String> {
   val annotations = annotationVariants(source)
   return when (source) {
@@ -58,7 +69,8 @@ fun functions(source: SourcesDeclaration): List<String> {
          |suspend fun test${source.name}$i($annotation r: Int): String""".trimMargin()
     }
     SourcesDeclaration.BODY, SourcesDeclaration.QUERY, SourcesDeclaration.PART, SourcesDeclaration.FIELD, SourcesDeclaration.HEADER -> annotations.mapIndexed { i, annotation ->
-      """|@GET("/test")
+      """|${source.optInAnnotation()}
+         |@GET("/test")
          |suspend fun test${source.name}$i($annotation r: Int): String""".trimMargin()
     }
   }

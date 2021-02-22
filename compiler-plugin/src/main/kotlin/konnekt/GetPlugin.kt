@@ -87,7 +87,12 @@ private val ktorImports: String = """
   |""".trimMargin()
 
 fun KtNamedFunction.generateDefinition(ctx: CompilerContext, func: NamedFunction): String? {
-  return extractData(ctx)?.render()
+  val method = extractData(ctx)
+  return if (method != null) {
+    ctx.verify(method)?.render() ?: method.render()
+  } else {
+    return null
+  }
 }
 
 fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
@@ -103,6 +108,32 @@ fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
   return Method(name, verb, headers, encoding, parameters, returnType)
 }
 
+fun SimpleRequest.render(): String {
+  require(headers == null) { "Runtime mapping for headers not yet implemented" }
+  val path = substituteParams(httpVerb.path, pathParameters) // move outside
+  val `httpVerb` = httpVerb.verb
+  val `params` = params.joinToString(",") { "${it.name}: ${it.type}" }
+  val `headerParameters` = headerParameters.joinToString("\n") {
+    """header("${it.annotation.value}", ${it.name}"""
+  }
+  val `queryParameters` = queryParameters.joinToString("\n") {
+    """parameter("${it.annotation.value}", ${it.name})"""
+  }
+  val `body` = if (body == null) "" else "body = ${body.name}"
+
+  return """
+    |override suspend fun $name($`params`): $returnType {
+    |   return client.$`httpVerb`(path = "$path") {
+    |       $`headerParameters`
+    |       $`queryParameters`
+    |       $`body`
+    |   }
+    |}
+  """.trimMargin()
+}
+
+operator fun Any?.unaryPlus(): String = this?.toString() ?: ""
+
 fun Method.render(): String {
   fun List<Parameter>.render() = joinToString { "${it.name}: ${it.type}" }
 
@@ -117,6 +148,8 @@ fun Method.render(): String {
     }
     """.trimIndent()
 }
+
+fun ElementScope.render(request: SimpleRequest): NamedFunction = request.render().function
 
 fun ElementScope.render(method: Method): NamedFunction = method.render().function.apply {
   addModifier(owner = value, modifier = KtTokens.OVERRIDE_KEYWORD)
