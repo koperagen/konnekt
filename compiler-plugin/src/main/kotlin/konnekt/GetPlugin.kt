@@ -89,7 +89,7 @@ private val ktorImports: String = """
 fun KtNamedFunction.generateDefinition(ctx: CompilerContext, func: NamedFunction): String? {
   val method = extractData(ctx)
   return if (method != null) {
-    ctx.verify(method)?.render() ?: method.render()
+    ctx.verify(method)?.render()
   } else {
     return null
   }
@@ -133,37 +133,6 @@ fun SimpleRequest.render(): String {
 }
 
 operator fun Any?.unaryPlus(): String = this?.toString() ?: ""
-
-fun Method.render(): String {
-  fun List<Parameter>.render() = joinToString { "${it.name}: ${it.type}" }
-
-  return """
-    override suspend fun $name(${params.render()}): $returnType {
-        return client.${httpVerb.verb.toLowerCase()}(path = "${substituteParams(httpVerb.path, params.filterPaths())}") {
-            ${params.filterQueries().joinToString("\n") {
-    it.render()
-  }
-  }
-        }
-    }
-    """.trimIndent()
-}
-
-fun ElementScope.render(request: SimpleRequest): NamedFunction = request.render().function
-
-fun ElementScope.render(method: Method): NamedFunction = method.render().function.apply {
-  addModifier(owner = value, modifier = KtTokens.OVERRIDE_KEYWORD)
-}
-
-fun List<Parameter>.filterQueries(): List<QueryParameter> = mapNotNull { parameter ->
-  (parameter.annotation as? Query)?.let { annotation -> TypedParameter(annotation, parameter.name, parameter.type) }
-}
-
-fun List<Parameter>.filterPaths(): List<PathParameter> = mapNotNull { parameter ->
-  parameter.annotation.safeAs<Path>()?.let { annotation -> TypedParameter(annotation, parameter.name, parameter.type) }
-}
-
-fun TypedParameter<Query>.render() = """parameter("${annotation.value}", $name)"""
 
 fun substituteParams(path: String, pathParams: List<PathParameter>): String {
   return pathParams.fold(path) { path, param ->
