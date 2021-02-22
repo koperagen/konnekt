@@ -28,15 +28,6 @@ interface AnnotationDeclaration {
 
 val AnnotationDeclaration.names: List<String> get() = listOf(declaration.simpleName, declaration.name)
 
-val SOURCE_ANNOTATIONS = setOf(
-    Path::class.java,
-    Body::class.java,
-    Query::class.java,
-    Field::class.java,
-    Part::class.java,
-    Header::class.java
-)
-
 enum class SourcesDeclaration(override val declaration: Class<*>): AnnotationDeclaration {
   BODY(Body::class.java),
   QUERY(Query::class.java),
@@ -46,33 +37,13 @@ enum class SourcesDeclaration(override val declaration: Class<*>): AnnotationDec
   HEADER(Header::class.java);
 }
 
-val HEADERS_ANNOTATIONS = setOf(
-    Headers::class.java
-)
-
 object HeadersDeclaration : AnnotationDeclaration {
   override val declaration = Headers::class.java
 }
 
-val ENCODING_ANNOTATIONS = setOf(
-    Multipart::class.java,
-    FormUrlEncoded::class.java
-)
-
 enum class MimeEncodingsDeclaration(override val declaration: Class<*>) : AnnotationDeclaration {
   MULTIPART(Multipart::class.java), FORM_URL_ENCODED(FormUrlEncoded::class.java)
 }
-
-val VERB_ANNOTATIONS = setOf(
-    HTTP::class.java,
-    GET::class.java,
-    POST::class.java,
-    PUT::class.java,
-    PATCH::class.java,
-    DELETE::class.java,
-    HEAD::class.java,
-    OPTIONS::class.java
-)
 
 enum class VerbsDeclaration(override val declaration: Class<*>): AnnotationDeclaration {
   Http(HTTP::class.java),
