@@ -32,6 +32,16 @@ val Meta.konnektPlugin: CliPlugin
           return@classDeclaration Transform.empty
         }
 
+        if (c.body?.functions?.any { !it.hasModifier(KtTokens.SUSPEND_KEYWORD) } == true) {
+          knownError(c.nameAsSafeName.asString().notSuspended)
+          return@classDeclaration Transform.empty
+        }
+
+        if (c.superTypeListEntries.isNotEmpty()) {
+          knownError(c.nameAsSafeName.asString().superTypesNotAllowed)
+          return@classDeclaration Transform.empty
+        }
+
         val implementation = body.functions.value
             .mapNotNull { it.generateDefinition(ctx, NamedFunction(it)) }
             .takeIf { it.size == body.functions.value.size }

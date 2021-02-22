@@ -146,6 +146,60 @@ class CodegenTest : FreeSpec({
       }
     }
 
+    "supertypes not allowed" - {
+      val declaration = """
+        |//metadebug
+        |$imports
+        |$prelude
+        |
+        |interface SomeInterface
+        |
+        |@Client
+        |interface Test : SomeInterface {
+        |   companion object
+        |}
+        |""".trimMargin()
+
+      "compiler error present" {
+        try {
+          assertThis(CompilerTest(
+              config = { konnektConfig },
+              code = { declaration.source },
+              assert = { failsWith { it.contains("Test".superTypesNotAllowed) } }
+          ))
+        } catch (e: InvocationTargetException) {
+          throw e.cause!!
+        }
+      }
+    }
+
+    "methods must have suspend modifier" - {
+      val declaration = """
+        |//metadebug
+        |$imports
+        |$prelude
+        |
+        |@Client
+        |interface Test {
+        |   fun foo()
+        |   
+        |   companion object
+        |}
+      """.trimMargin()
+
+      "compiler error present" {
+        try {
+          assertThis(CompilerTest(
+              config = { konnektConfig },
+              code = { declaration.source },
+              assert = { failsWith { it.contains("Test".notSuspended) } }
+          ))
+        } catch (e: InvocationTargetException) {
+          throw e.cause!!
+        }
+      }
+    }
+
     "Conflicting annotations" - {
       "two mime encodings cause error" {
         val declaration = """

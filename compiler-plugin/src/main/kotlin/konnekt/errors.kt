@@ -11,7 +11,10 @@ val String.noCompanion
   get() = "${Client::class.java.simpleName} annotated interface $this needs to declare companion object."
 
 val String.notSuspended
-  get() = "Function in ${Client::class.java.simpleName} interface should have suspend modifier"
+  get() = "Methods in ${Client::class.java.simpleName} interface should have suspend modifier"
+
+val String.superTypesNotAllowed
+  get() = "${Client::class.java.simpleName} annotated interface $this must not have super types."
 
 internal fun CompilerContext.knownError(message: String, element: KtAnnotated? = null): Unit =
     ctx.messageCollector?.report(CompilerMessageSeverity.ERROR, message, null) ?: Unit
