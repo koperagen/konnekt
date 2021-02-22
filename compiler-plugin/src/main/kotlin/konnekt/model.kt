@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.psi.KtTypeReference
 data class Method(
   val name: String,
   val httpVerb: VerbAnnotationModel,
-  val headers: HeadersAnnotation?,
+  val headers: HeadersAnnotationModel?,
   val encoding: MimeEncoding? = null,
   val params: List<Parameter>,
   val returnType: Type
@@ -44,6 +44,8 @@ data class VerbAnnotationModel(val verb: String, val path: HttpPath) {
     fun put(path: HttpPath) = VerbAnnotationModel(PUT, path)
   }
 }
+
+data class HeadersAnnotationModel(val headers: List<String>)
 
 sealed class MimeEncoding
 

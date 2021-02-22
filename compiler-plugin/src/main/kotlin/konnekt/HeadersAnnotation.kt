@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtUserType
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
-fun KtNamedFunction.headers(ctx: CompilerContext): HeadersAnnotation? {
+fun KtNamedFunction.headers(ctx: CompilerContext): HeadersAnnotationModel? {
   val scoped = annotationEntries.mapNotNull { headersAnnotation(it) }
 
   return when (scoped.size) {
@@ -25,12 +25,10 @@ fun headersAnnotation(annotation: KtAnnotationEntry): HeadersAnnotationScope? {
 
 class HeadersAnnotationScope(val annotation: KtAnnotationEntry)
 
-data class HeadersAnnotation(val headers: List<String>)
-
-private fun CompilerContext.refine(scope: HeadersAnnotationScope): HeadersAnnotation? {
+private fun CompilerContext.refine(scope: HeadersAnnotationScope): HeadersAnnotationModel? {
   return scope.annotation.valueArguments.mapIndexed { index, valueArgument ->
     constantStringOrNull(valueArgument) ?: return parsingError("")
   }.let {
-    HeadersAnnotation(it)
+    HeadersAnnotationModel(it)
   }
 }

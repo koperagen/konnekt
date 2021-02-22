@@ -74,7 +74,7 @@ class CodegenTest : FreeSpec({
       val method = Method(
           name = "getPet",
           httpVerb = VerbAnnotationModel.get(path),
-          headers = HeadersAnnotation(emptyList()),
+          headers = HeadersAnnotationModel(emptyList()),
           encoding = null,
           params = listOf(konnekt.Parameter(
               annotation = Path(placeholder = "id", encoded = false),
