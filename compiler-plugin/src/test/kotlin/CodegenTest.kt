@@ -18,26 +18,6 @@ private val CompilerTest.Companion.konnektConfig: List<Config>
 @Suppress("unused")
 class CodegenTest : FreeSpec({
 
-  "!simple path" - {
-    val path = "/test/{placeholder}"
-
-    "!Parse raw path string to components " {
-    }
-
-    "Generate valid path from components" {
-      val pathParams = listOf(Parameter(Path("placeholder", false), "placeholder", "String"))
-      substituteParams(path, pathParams.filterPaths()) shouldBe "/test/\${placeholder}/"
-    }
-  }
-
-  "!full path" - {
-    val path = "/test/{placeholder}/"
-
-    "Parse raw path string to components " {
-    }
-
-  }
-
   "parts render" - {
     "source annotations" - {
       "path" {
@@ -65,32 +45,6 @@ class CodegenTest : FreeSpec({
 
   MimeEncodingsDeclaration.values().forEach {
     include(annotationTest(it))
-  }
-
-  "!method render" - {
-    "ff" {
-      val path = "/pets/{id}"
-      println(path)
-      val method = Method(
-          name = "getPet",
-          httpVerb = VerbAnnotationModel.get(path),
-          headers = HeadersAnnotationModel(emptyList()),
-          encoding = null,
-          params = listOf(konnekt.Parameter(
-              annotation = Path(placeholder = "id", encoded = false),
-              name = "param",
-              type = "String"
-          )),
-          returnType = "String"
-      )
-
-      method.render() shouldBeIgnoringWhitespaces """
-        override suspend fun getPet(@Path(placeholder = "id", encoded = false) param: String): String {
-          return client.get("/pets/${'$'}{param}") {
-          }
-        }
-      """.trimIndent()
-    }
   }
 
   "Reference expression in string argument cause error for @Headers" {
