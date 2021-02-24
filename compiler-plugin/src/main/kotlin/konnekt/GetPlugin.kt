@@ -37,6 +37,11 @@ val Meta.konnektPlugin: CliPlugin
           return@classDeclaration Transform.empty
         }
 
+        if (c.body?.functions?.any { !it.hasVerbAnnotation() } == true) {
+          knownError(c.nameAsSafeName.asString().noVerb)
+          return@classDeclaration Transform.empty
+        }
+
         if (c.superTypeListEntries.isNotEmpty()) {
           knownError(c.nameAsSafeName.asString().superTypesNotAllowed)
           return@classDeclaration Transform.empty
@@ -70,6 +75,8 @@ val Meta.konnektPlugin: CliPlugin
   }
 
 fun isKonnektClient(ktClass: KtClass): Boolean = ktClass.isInterface() && ktClass.hasAnnotation(*CLIENT_ANNOTATION_NAMES.toTypedArray())
+
+fun KtAnnotated.hasVerbAnnotation() = hasAnnotation(*VerbsDeclaration.values().flatMap { it.names }.toTypedArray())
 
 fun KtAnnotated.hasAnnotation(
     vararg annotationNames: String
