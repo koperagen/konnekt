@@ -19,6 +19,9 @@ val String.superTypesNotAllowed
 val String.noVerb
   get() = "Methods in @${Client::class.java.simpleName} interface $this should have verb annotation"
 
+val String.noClientAnnotation
+  get() = "interface $this should be annotated with ${ClientDeclaration.fqEntry}"
+
 internal fun CompilerContext.knownError(message: String, element: KtAnnotated? = null): Unit =
     ctx.messageCollector?.report(CompilerMessageSeverity.ERROR, message, null) ?: Unit
 
