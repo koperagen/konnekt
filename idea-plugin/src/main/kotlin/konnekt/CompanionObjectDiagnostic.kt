@@ -16,8 +16,8 @@ val IdeMetaPlugin.companionObjectDiagnostic
       addLocalInspection(
         inspectionTool = companionObjectInspection,
         level = HighlightDisplayLevel.ERROR,
-        groupPath = arrayOf("Konnekt", "CompanionObject"),
-        groupDisplayName = "CompanionObject",
+        groupPath = clientInterfacePath,
+        groupDisplayName = konnektGroupName,
         displayName = "Companion object diagnostic",
         shortName = "Companion object diagnostic"
       )
