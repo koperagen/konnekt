@@ -27,7 +27,7 @@ intellij {
     version = "2020.2.1"
     setPlugins(
         "gradle", "gradle-java", "java", "org.jetbrains.kotlin:${KOTLIN_IDEA_VERSION}",
-        "git4idea", "io.arrow-kt.arrow:1.4.10-SNAPSHOT-1606149534"
+        "git4idea", "io.arrow-kt.arrow:1.4.10-SNAPSHOT-1615374508"
     )
 
     pluginsRepo {

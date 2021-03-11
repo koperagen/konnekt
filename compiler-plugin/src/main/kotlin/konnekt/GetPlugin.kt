@@ -45,7 +45,7 @@ val Meta.konnektPlugin: CliPlugin
         }
 
         val implementation = body.functions.value
-            .mapNotNull { it.generateDefinition(ctx, NamedFunction(it)) }
+            .mapNotNull { it.generateDefinition(ctx, NamedFunction(it, null)) }
             .takeIf { it.size == body.functions.value.size }
             ?.joinToString("\n")
             ?: return@classDeclaration Transform.empty
