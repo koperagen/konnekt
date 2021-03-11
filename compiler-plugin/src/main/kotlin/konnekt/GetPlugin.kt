@@ -54,11 +54,18 @@ val Meta.konnektPlugin: CliPlugin
 
         // How to debug transformations?
         ctx.messageCollector?.toLogger()?.log(implementation)
+
+        val packageDirective = c.containingKtFile.packageDirective?.let { "package ${it.fqName}" } ?: ""
+        val declarationPath = c.containingKtFile.packageDirective
+            ?.let { if (it.isRoot) "" else "${it.fqName}." }
+            ?: ""
+
         Transform.newSources(
-            """|package ${c.containingKtFile.packageFqName}
+            """|$packageDirective
                |
                |$ktorImports
                |$imports
+               |import $declarationPath$name.*
                |
                |operator fun $name.Companion.invoke(client: HttpClient): $name {
                |  return object : $name {
