@@ -111,7 +111,7 @@ fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
   val encoding = mimeEncoding(ctx)
 
   val parameters = parameters(ctx) ?: return null
-  val returnType = typeReference?.text ?: TODO("Handle return type absence")
+  val returnType = typeReference?.text ?: "Unit"
   return Method(name, verb, headers, encoding, parameters, returnType)
 }
 

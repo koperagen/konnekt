@@ -45,6 +45,8 @@ fun <T> CompilerContext.withRefinedParameters(method: Method, f: CompilerContext
 }
 
 fun CompilerContext.verify(method: Method): SimpleRequest? = withRefinedParameters(method) {
+  verifyPath(method.httpVerb.path, it.pathParams) ?: return@withRefinedParameters null
+
   when (method.encoding) {
     is FormUrlEncoded -> null
     is Multipart -> null
@@ -71,6 +73,25 @@ fun CompilerContext.verify(method: Method): SimpleRequest? = withRefinedParamete
     }
   }
 }
+
+private fun CompilerContext.verifyPath(path: HttpPath, params: List<PathParameter>): Unit? {
+  val variables = PATH_VARIABLE_PATTERN.findAll(path)
+  val variableNames = variables.map { it.groups[1]!!.value }.toSet()
+  val paramsNames = params.map { it.annotation.placeholder }.toSet()
+  val unusedVariables = variableNames - paramsNames
+  val unusedArguments = paramsNames - variableNames
+  return when {
+    unusedVariables.isNotEmpty() -> {
+      parsingError("URL Template variables [${unusedVariables.joinToString()}] has no matching function arguments")
+    }
+    unusedArguments.isNotEmpty() -> {
+      parsingError("@Path arguments [${unusedArguments.joinToString()}] has no matching URL Template variable")
+    }
+    else -> Unit
+  }
+}
+
+private val PATH_VARIABLE_PATTERN = """\{(.+?)}""".toRegex()
 
 data class SimpleRequest(
   val name: String,

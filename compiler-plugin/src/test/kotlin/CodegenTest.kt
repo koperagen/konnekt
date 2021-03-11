@@ -12,7 +12,7 @@ import io.kotest.matchers.shouldBe
 import konnekt.*
 import java.lang.reflect.InvocationTargetException
 
-private val CompilerTest.Companion.konnektConfig: List<Config>
+val CompilerTest.Companion.konnektConfig: List<Config>
   get() = listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies)
 
 @Suppress("unused")
@@ -297,6 +297,24 @@ class CodegenTest : FreeSpec({
     }
   }
 })
+
+infix fun String.expect(assert: CompilerTest.Companion.() -> Assert) = assertThis(CompilerTest({ konnektConfig }, { this@expect.source }, assert))
+
+fun interfaceTemplate(fn: () -> String): String {
+  return """
+    |//metadebug
+    |$imports
+    |$prelude
+    |
+    |@Client
+    |interface Test {
+    |
+    |   ${fn()}
+    |   
+    |   companion object
+    |}
+  """.trimMargin()
+}
 
 fun String.annotationTest(functions: Iterable<String>) = stringSpec {
   this@annotationTest {
