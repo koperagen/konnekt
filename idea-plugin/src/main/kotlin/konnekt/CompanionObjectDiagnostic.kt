@@ -14,12 +14,10 @@ val IdeMetaPlugin.companionObjectDiagnostic
   get() = "Companion object diagnostic" {
     meta(
       addLocalInspection(
-        inspectionTool = companionObjectInspection,
-        level = HighlightDisplayLevel.ERROR,
+        inspection = companionObjectInspection,
         groupPath = arrayOf("Konnekt", "CompanionObject"),
         groupDisplayName = "CompanionObject",
-        displayName = "Companion object diagnostic",
-        shortName = "Companion object diagnostic"
+        level = HighlightDisplayLevel.ERROR,
       )
     )
   }
