@@ -4,7 +4,6 @@ import arrow.meta.CliPlugin
 import arrow.meta.Meta
 import arrow.meta.invoke
 import arrow.meta.phases.CompilerContext
-import arrow.meta.phases.analysis.ElementScope
 import arrow.meta.quotes.ScopedList
 import arrow.meta.quotes.Transform
 import arrow.meta.quotes.classDeclaration
@@ -15,8 +14,6 @@ import org.jetbrains.kotlin.psi.KtAnnotated
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.addRemoveModifier.addModifier
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 class KonnektPlugin : Meta {
   override fun intercept(ctx: CompilerContext): List<CliPlugin> =
