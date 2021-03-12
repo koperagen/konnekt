@@ -13,8 +13,8 @@ val IdeMetaPlugin.clientInterfaceWithSupertypeDiagnostic
     meta(
       addLocalInspection(
         clientInterfaceWithSupertypeInspection,
-        arrayOf("Konnekt", "ClientInterface"),
-        "Konnekt",
+        clientInterfacePath,
+        konnektGroupName,
         HighlightDisplayLevel.ERROR,
       )
     )

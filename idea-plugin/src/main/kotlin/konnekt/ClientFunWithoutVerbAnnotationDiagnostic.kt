@@ -19,8 +19,8 @@ val IdeMetaPlugin.clientFunWithoutVerbAnnotationDiagnostic
         HighlightDisplayLevel.ERROR,
         "ClientFunWithoutVerbAnnotation",
         "Client fun without verb annotation",
-        arrayOf("Konnekt", "ClientInterface"),
-        "Konnekt"
+        clientInterfacePath,
+        konnektGroupName
       )
     )
   }

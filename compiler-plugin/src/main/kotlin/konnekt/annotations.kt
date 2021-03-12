@@ -28,6 +28,12 @@ interface AnnotationDeclaration {
 
 val AnnotationDeclaration.names: List<String> get() = listOf(declaration.simpleName, declaration.name)
 
+val AnnotationDeclaration.fqEntry: String get() = "@${declaration.name}"
+
+object ClientDeclaration : AnnotationDeclaration {
+  override val declaration: Class<*> = Client::class.java
+}
+
 enum class SourcesDeclaration(override val declaration: Class<*>): AnnotationDeclaration {
   BODY(Body::class.java),
   QUERY(Query::class.java),

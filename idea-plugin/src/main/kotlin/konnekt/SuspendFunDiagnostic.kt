@@ -15,8 +15,8 @@ val IdeMetaPlugin.suspendFunDiagnostic
     meta(
       addLocalInspection(
         suspendFunInspection,
-        arrayOf("Konnekt", "ClientInterface"),
-        "Konnekt",
+        clientInterfacePath,
+        konnektGroupName,
         HighlightDisplayLevel.ERROR,
       )
     )
