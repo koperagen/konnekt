@@ -21,7 +21,7 @@ class KonnektGradlePlugin : Plugin<Project> {
     val compilerPluginVersion = properties.getProperty("COMPILER_PLUGIN_VERSION")
     val kotlinVersion = properties.getProperty("KOTLIN_VERSION")
     if (kotlinVersion != project.getKotlinPluginVersion())
-       throw InvalidUserDataException("Use Kotlin $kotlinVersion for Arrow Meta Gradle Plugin")
+       throw InvalidUserDataException("Use Kotlin $kotlinVersion for Konnekt Gradle Plugin")
     project.afterEvaluate { p ->
       // Dependencies that aren't provided by compiler-plugin
       p.dependencies.add("kotlinCompilerClasspath", "org.jetbrains.kotlin:kotlin-script-util:$kotlinVersion")
@@ -30,7 +30,7 @@ class KonnektGradlePlugin : Plugin<Project> {
 
       p.tasks.withType(KotlinCompile::class.java).configureEach {
         it.kotlinOptions.freeCompilerArgs += listOf(
-          "-Xplugin=${classpathOf("compiler-plugin:$compilerPluginVersion")}"
+          "-Xplugin=${classpathOf("konnekt-plugin:$compilerPluginVersion")}"
 //          , "-P"
 //          , "plugin:arrow.meta.plugin.compiler:generatedSrcOutputDir=${p.buildDir.absolutePath}"
         )

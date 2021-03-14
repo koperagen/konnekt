@@ -35,5 +35,19 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-gradle-plugin-api:$KOTLIN_VERSION")
   implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
 
-  runtimeOnly(project(":compiler-plugin"))
+  runtimeOnly(project(":compiler-plugin", "createNewPlugin"))
+
+  testImplementation("io.kotest:kotest-framework-api:4.3.1")
+  testImplementation("io.kotest:kotest-property:4.3.1")
+  testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.1")
+}
+
+tasks.withType<Test> {
+  useJUnitPlatform()
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
 }

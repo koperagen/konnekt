@@ -64,6 +64,7 @@ tasks.withType<Test> {
 }
 
 val createNewPlugin = tasks.create<Jar>("createNewPlugin") {
+    archiveBaseName.set("konnekt-plugin")
     dependsOn("classes")
     from("build/classes/kotlin/main")
     from("build/resources/main")
@@ -97,13 +98,14 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
   }
 }
 
-val pluginArtifact = artifacts.sourceArtifacts(createNewPlugin)
+val conf = configurations.create("createNewPlugin")
+val pluginArtifact = artifacts.add(conf.name, createNewPlugin)
 
 publishing {
   publications {
     val plugin by creating(MavenPublication::class.java) {
+      artifactId = "konnekt-plugin"
       artifact(pluginArtifact)
     }
   }
 }
-

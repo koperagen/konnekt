@@ -7,8 +7,10 @@ import org.gradle.api.Project
 class MyPlugin : Plugin<Project> {
 
   override fun apply(p: Project) {
-    p.afterEvaluate {
-      println("Hello, world!")
+    p.tasks.create("Hello") {
+      it.doLast {
+        println("Hello, world!")
+      }
     }
   }
 
