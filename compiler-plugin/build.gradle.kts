@@ -3,9 +3,11 @@ import java.nio.file.Paths
 plugins {
   kotlin("jvm")
   id("com.github.johnrengelman.shadow") version "5.2.0"
+  `maven-publish`
 }
 
 group = "org.example"
+version = "1.4.10-SNAPSHOT"
 
 val KOTLIN_TEST_VERSION: String by project
 val KOTLIN_VERSION: String by project
@@ -60,7 +62,8 @@ dependencies {
 tasks.withType<Test> {
   useJUnitPlatform()
 }
-tasks.create<Jar>("createNewPlugin") {
+
+val createNewPlugin = tasks.create<Jar>("createNewPlugin") {
     dependsOn("classes")
     from("build/classes/kotlin/main")
     from("build/resources/main")
@@ -93,3 +96,14 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     exclude(dependency("com.intellij:annotations"))
   }
 }
+
+val pluginArtifact = artifacts.sourceArtifacts(createNewPlugin)
+
+publishing {
+  publications {
+    val plugin by creating(MavenPublication::class.java) {
+      artifact(pluginArtifact)
+    }
+  }
+}
+
