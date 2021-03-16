@@ -1,3 +1,4 @@
+import arrow.meta.plugin.testing.Assert
 import arrow.meta.plugin.testing.CompilerTest
 import arrow.meta.plugin.testing.Config
 import arrow.meta.plugin.testing.ConfigSyntax
