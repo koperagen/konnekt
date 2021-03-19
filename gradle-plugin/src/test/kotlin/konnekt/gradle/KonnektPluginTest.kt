@@ -1,4 +1,4 @@
-package konnekt
+package konnekt.gradle
 
 import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.FreeSpec
@@ -26,7 +26,7 @@ class KonnektPluginTest : FreeSpec({
           """
           |plugins {
           |    kotlin("jvm") version "1.4.21"
-          |    id("org.samples.greeting")
+          |    id("io.github.koperagen.greeting")
           |}
           |
           |group = "org.example"
@@ -101,7 +101,7 @@ class KonnektPluginTest : FreeSpec({
       buildFile.writeText("""
         |plugins {
         |    kotlin("jvm") version "1.4.10"
-        |    id("org.samples.konnekt")
+        |    id("io.github.koperagen.konnekt")
         |}
         |
         |group = "org.example"
@@ -114,7 +114,7 @@ class KonnektPluginTest : FreeSpec({
         |
         |dependencies {
         |    implementation(kotlin("stdlib"))
-        |    implementation("org.example:prelude-jvm:1.0-SNAPSHOT")
+        |    implementation("io.github.koperagen:prelude-jvm:1.4.10-SNAPSHOT")
         |}
       """.trimMargin())
 

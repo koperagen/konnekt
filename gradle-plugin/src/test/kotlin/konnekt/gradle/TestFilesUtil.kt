@@ -1,4 +1,4 @@
-package konnekt
+package konnekt.gradle
 
 import io.kotest.core.TestConfiguration
 import io.kotest.core.test.TestStatus

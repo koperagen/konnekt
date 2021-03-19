@@ -1,4 +1,4 @@
-package org.example
+package konnekt.gradle
 
 import io.github.classgraph.ClassGraph
 import org.gradle.api.InvalidUserDataException

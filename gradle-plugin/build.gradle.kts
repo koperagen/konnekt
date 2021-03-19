@@ -5,9 +5,6 @@ plugins {
   id("com.gradle.plugin-publish") version "0.12.0"
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
-
 repositories {
   mavenCentral()
 }
@@ -15,13 +12,13 @@ repositories {
 gradlePlugin {
   plugins {
     create("simplePlugin") {
-      id = "org.samples.greeting"
-      implementationClass = "org.example.MyPlugin"
+      id = "io.github.koperagen.greeting"
+      implementationClass = "konnekt.gradle.MyPlugin"
     }
 
     create("konnektPlugin") {
-      id = "org.samples.konnekt"
-      implementationClass = "org.example.KonnektGradlePlugin"
+      id = "io.github.koperagen.konnekt"
+      implementationClass = "konnekt.gradle.KonnektGradlePlugin"
     }
   }
 }

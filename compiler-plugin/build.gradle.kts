@@ -6,9 +6,6 @@ plugins {
   `maven-publish`
 }
 
-group = "org.example"
-version = "1.4.10-SNAPSHOT"
-
 val KOTLIN_TEST_VERSION: String by project
 val KOTLIN_VERSION: String by project
 val OPENAPI_VERSION: String by project
