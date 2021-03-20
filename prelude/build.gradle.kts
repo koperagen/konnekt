@@ -8,6 +8,8 @@ repositories {
   jcenter()
 }
 
+val KTOR_VERSION: String by project
+
 publishing {
   val username by lazy { System.getenv("KONNEKT_MAVEN_USERNAME") }
   val password by lazy { System.getenv("KONNEKT_MAVEN_PASSWORD") }
@@ -40,6 +42,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         implementation(kotlin("stdlib"))
+        api("io.ktor:ktor-client-core:$KTOR_VERSION")
       }
     }
     val commonTest by getting {

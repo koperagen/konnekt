@@ -380,19 +380,19 @@ data class Character(
 )
 
 val ConfigSyntax.ktorDependencies get() = addDependencies(
-    Dependency("ktor-client-core:1.3.0"),
-    Dependency("ktor-http:1.3.0"),
-    Dependency("ktor-http-jvm:1.3.0"),
-    Dependency("ktor-client-core-jvm:1.3.0"),
-    Dependency("ktor-client-cio:1.3.0"),
-    Dependency("ktor-client-json-jvm:1.3.0"),
-    Dependency("ktor-client-logging-jvm:1.3.0"),
-    Dependency("ktor-client-jackson:1.3.0"),
-    Dependency("ktor-client-mock:1.3.0"),
-    Dependency("ktor-client-mock-jvm:1.3.0"),
-    Dependency("kotlinx-coroutines-core-jvm:1.3.9"),
-    Dependency("jackson-databind:2.9.9.3"),
-    Dependency("jackson-module-kotlin:2.9.9"),
+    Dependency("ktor-client-core"),
+    Dependency("ktor-http"),
+    Dependency("ktor-http-jvm"),
+    Dependency("ktor-client-core-jvm"),
+    Dependency("ktor-client-cio"),
+    Dependency("ktor-client-json-jvm"),
+    Dependency("ktor-client-logging-jvm"),
+    Dependency("ktor-client-jackson"),
+    Dependency("ktor-client-mock"),
+    Dependency("ktor-client-mock-jvm"),
+    Dependency("kotlinx-coroutines-core-jvm"),
+    Dependency("jackson-databind"),
+    Dependency("jackson-module-kotlin"),
     Dependency("prelude")
 )
 

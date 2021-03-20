@@ -3,11 +3,9 @@ package konnekt.gradle
 import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import java.io.File
 
 class KonnektPluginTest : FreeSpec({
 
@@ -92,11 +90,15 @@ class KonnektPluginTest : FreeSpec({
       }
       src.writeText("""
         |import konnekt.prelude.Client
+        |import io.ktor.client.HttpClient
         |
         |@Client
         |interface Test {
         |
+        |   companion object
         |}
+        |
+        |val api = Test(HttpClient())
       """.trimMargin())
       buildFile.writeText("""
         |plugins {
@@ -118,13 +120,13 @@ class KonnektPluginTest : FreeSpec({
         |}
       """.trimMargin())
 
-      withArguments("compileKotlin")
+      withArguments("build")
       withDebug(true)
       withGradleVersion("6.3")
     }
 
     result.asClue {
-      it.output.shouldContain("SUCCESS")
+      it.task(":build")?.outcome shouldBe TaskOutcome.SUCCESS
     }
   }
 })

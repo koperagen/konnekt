@@ -9,6 +9,7 @@ plugins {
 val KOTLIN_TEST_VERSION: String by project
 val KOTLIN_VERSION: String by project
 val OPENAPI_VERSION: String by project
+val KTOR_VERSION: String by project
 
 repositories {
   mavenCentral()
@@ -19,7 +20,6 @@ repositories {
 }
 
 dependencies {
-  val ktor_version = "1.3.0"
 
   compileOnly(project(":prelude"))
   compileOnly(kotlin("stdlib-jdk8"))
@@ -42,16 +42,16 @@ dependencies {
   testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.1")
 
   // Required for integration test of plugin
-  testImplementation("io.ktor:ktor-client-mock:$ktor_version")
-  testImplementation("io.ktor:ktor-client-mock-jvm:$ktor_version")
+  testImplementation("io.ktor:ktor-client-mock:$KTOR_VERSION")
+  testImplementation("io.ktor:ktor-client-mock-jvm:$KTOR_VERSION")
   testImplementation("io.arrow-kt:arrow-meta-prelude:1.4.10-SNAPSHOT")
-  testImplementation("io.ktor:ktor-client-core:$ktor_version")
-  testImplementation("io.ktor:ktor-http:$ktor_version")
-  testImplementation("io.ktor:ktor-client-core-jvm:$ktor_version")
-  testImplementation("io.ktor:ktor-client-cio:$ktor_version")
-  testImplementation("io.ktor:ktor-client-json-jvm:$ktor_version")
-  testImplementation("io.ktor:ktor-client-jackson:$ktor_version")
-  testImplementation("io.ktor:ktor-client-logging-jvm:$ktor_version")
+  testImplementation("io.ktor:ktor-client-core:$KTOR_VERSION")
+  testImplementation("io.ktor:ktor-http:$KTOR_VERSION")
+  testImplementation("io.ktor:ktor-client-core-jvm:$KTOR_VERSION")
+  testImplementation("io.ktor:ktor-client-cio:$KTOR_VERSION")
+  testImplementation("io.ktor:ktor-client-json-jvm:$KTOR_VERSION")
+  testImplementation("io.ktor:ktor-client-jackson:$KTOR_VERSION")
+  testImplementation("io.ktor:ktor-client-logging-jvm:$KTOR_VERSION")
   testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6")
   testImplementation("org.slf4j:slf4j-simple:1.7.30")
 }
