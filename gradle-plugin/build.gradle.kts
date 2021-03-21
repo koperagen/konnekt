@@ -29,7 +29,6 @@ gradlePlugin {
 tasks.withType<ProcessResources> {
   filesMatching("**/plugin.properties") {
     filter {
-      println(it)
       it.replace("%KTOR_VERSION%", KTOR_VERSION) }
   }
 }

@@ -36,8 +36,6 @@ class KonnektGradlePlugin : Plugin<Project> {
       p.tasks.withType(KotlinCompile::class.java).configureEach {
         it.kotlinOptions.freeCompilerArgs += listOf(
           "-Xplugin=${classpathOf("konnekt-plugin:$compilerPluginVersion")}"
-//          , "-P"
-//          , "plugin:arrow.meta.plugin.compiler:generatedSrcOutputDir=${p.buildDir.absolutePath}"
         )
       }
     }
