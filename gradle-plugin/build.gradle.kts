@@ -9,6 +9,9 @@ repositories {
   mavenCentral()
 }
 
+val KOTLIN_VERSION: String by project
+val KTOR_VERSION: String by project
+
 gradlePlugin {
   plugins {
     create("simplePlugin") {
@@ -23,7 +26,13 @@ gradlePlugin {
   }
 }
 
-val KOTLIN_VERSION: String by project
+tasks.withType<ProcessResources> {
+  filesMatching("**/plugin.properties") {
+    filter {
+      println(it)
+      it.replace("%KTOR_VERSION%", KTOR_VERSION) }
+  }
+}
 
 dependencies {
   implementation(kotlin("stdlib"))
