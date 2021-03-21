@@ -4,6 +4,7 @@ import io.github.classgraph.ClassGraph
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.plugin.KotlinBasePluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
@@ -16,6 +17,10 @@ class KonnektGradlePlugin : Plugin<Project> {
   }
 
   override fun apply(project: Project): Unit {
+    require(GradleVersion.current() <= GradleVersion.version("6.5.1")) {
+      "Gradle version ${GradleVersion.current()} is not compatible with Konnekt Gradle Plugin due to https://github.com/gradle/gradle/issues/14727." +
+          " Please use [5.0 .. 6.5.1] instead"
+    }
     val properties = Properties()
     properties.load(this.javaClass.getResourceAsStream("plugin.properties"))
     val compilerPluginVersion = properties.getProperty("COMPILER_PLUGIN_VERSION")
