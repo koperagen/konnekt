@@ -4,8 +4,6 @@ import arrow.meta.plugin.testing.Config
 import arrow.meta.plugin.testing.ConfigSyntax
 import arrow.meta.plugin.testing.Dependency
 import arrow.meta.plugin.testing.assertThis
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.stringSpec
@@ -230,32 +228,6 @@ class CodegenTest : FreeSpec({
       ))
     }
 
-    "!tt" {
-      assertThis(CompilerTest(
-          config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
-          code = { declaration.source },
-          assert = { quoteOutputMatches(implementation.source) }
-      ))
-    }
-
-    "complex return type propagates" {
-      val objectMapper = jacksonObjectMapper()
-      val books = objectMapper.readValue<List<Book>>(resourceContent("books.json"))
-      val book = objectMapper.readValue<Book>(resourceContent("book_1.json"))
-      val character = objectMapper.readValue<Character>(resourceContent("character_1.json"))
-      assertThis(CompilerTest(
-          config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
-          code = { declaration.source },
-          assert = {
-            allOf(
-                "listBooks()".source.evalsTo(books),
-                "bookById()".source.evalsTo(book),
-                "characterById()".source.evalsTo(character)
-            )
-          }
-      ))
-    }
-
     "simple test" - {
       val declaration = """
         |//metadebug
@@ -341,44 +313,6 @@ fun String.annotationTest(functions: Iterable<String>) = stringSpec {
   }
 }
 
-fun Any.resourceContent(file: String): String {
-    return javaClass.classLoader.getResourceAsStream(file)?.reader()?.readText() ?: error("Resourse $file not found")
-}
-
-
-data class Book(
-    val url: String,
-    val name: String,
-    val isbn: String,
-    val authors: List<String>,
-    val numberOfPages: String,
-    val publisher: String,
-    val country: String,
-    val mediaType: String,
-    val released: String,
-    val characters: List<String>,
-    val povCharacters: List<String>
-)
-
-data class Character(
-    val url: String,
-    val name: String,
-    val gender: String,
-    val culture: String,
-    val born: String,
-    val died: String,
-    val titles: List<String>,
-    val aliases: List<String>,
-    val father: String,
-    val mother: String,
-    val spouse: String,
-    val allegiances: List<String>,
-    val books: List<String>,
-    val povBooks: List<String>,
-    val tvSeries: List<String>,
-    val playedBy: List<String>
-)
-
 val ConfigSyntax.ktorDependencies get() = addDependencies(
     Dependency("ktor-client-core"),
     Dependency("ktor-http"),
@@ -395,8 +329,6 @@ val ConfigSyntax.ktorDependencies get() = addDependencies(
     Dependency("jackson-module-kotlin"),
     Dependency("prelude")
 )
-
-
 
 infix fun String.shouldBeIgnoringWhitespaces(other: String) = this.ignoringWhitespaces() shouldBe other.ignoringWhitespaces()
 
