@@ -1,5 +1,21 @@
 package konnekt.prelude
 
+/**
+ *  Mark interface as target for plugin to generate its implementation
+ *
+ *  All functions must have `suspend` modifier
+ *  Interface must have `companion obhect` and have no supertypes
+ *
+ * ```
+ * @Client
+ * interface Sample {
+ *    @GET("/bar")
+ *    suspend fun foo(): String
+ *
+ *    companion object
+ * }
+ * ```
+ */
 @Target(AnnotationTarget.CLASS)
 annotation class Client
 
