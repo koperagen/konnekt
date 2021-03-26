@@ -89,6 +89,42 @@ class ClientInterfaceRequirementsTests : DescribeSpec({
           |}
         """.trimMargin()
       }
+
+      it("must not have both @Body and @Multipart", expectOn = {
+        failsWith { it.contains("Method test cannot have both @Multipart encoding and @Body parameter") }
+      }) {
+        """
+          |//metadebug
+          |import konnekt.prelude.*
+          |
+          |@Client
+          |interface Test {
+          |   @Multipart
+          |   @GET("/test")
+          |   suspend fun test(@Body foo: String): String
+          |   
+          |   companion object
+          |}
+        """.trimMargin()
+      }
+
+      xit("must not have both @Body and @FormUrlEncoded", expectOn = {
+        failsWith { it.contains("Method test cannot have both @FormUrlEncoded encoding and @Body parameter") }
+      }) {
+        """
+          |//metadebug
+          |import konnekt.prelude.*
+          |
+          |@Client
+          |interface Test {
+          |   @FormUrlEncoded
+          |   @GET("/test")
+          |   suspend fun test(@Body foo: String): String
+          |   
+          |   companion object
+          |}
+        """.trimMargin()
+      }
     }
 
   }

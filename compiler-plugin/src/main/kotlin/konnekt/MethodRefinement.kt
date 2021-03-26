@@ -44,12 +44,29 @@ fun <T> CompilerContext.withRefinedParameters(method: Method, f: CompilerContext
   return f(context)
 }
 
-fun CompilerContext.verify(method: Method): SimpleRequest? = withRefinedParameters(method) {
+fun CompilerContext.verify(method: Method): Request? = withRefinedParameters(method) {
   verifyPath(method.httpVerb.path, it.pathParams) ?: return@withRefinedParameters null
 
   when (method.encoding) {
-    is FormUrlEncoded -> null
-    is Multipart -> null
+    is FormUrlEncoded -> parsingError("FormUrlEncoded is not implemented")
+    is Multipart -> {
+      if (it.bodyParams.isNotEmpty()) {
+        return@withRefinedParameters parsingError("Method ${method.name} cannot have both @Multipart encoding and @Body parameter")
+      }
+      require(it.fieldParams.isEmpty())
+
+      MultipartRequest(
+          method.name,
+          method.httpVerb,
+          method.headers,
+          it.partParams,
+          it.queryParams,
+          it.pathParams,
+          it.headerParams,
+          method.returnType,
+          method.params
+      )
+    }
     null -> {
       require(it.fieldParams.isEmpty())
       require(it.partParams.isEmpty())
@@ -93,6 +110,8 @@ private fun CompilerContext.verifyPath(path: HttpPath, params: List<PathParamete
 
 private val PATH_VARIABLE_PATTERN = """\{(.+?)}""".toRegex()
 
+sealed class Request
+
 data class SimpleRequest(
   val name: String,
   val httpVerb: VerbAnnotationModel,
@@ -103,4 +122,16 @@ data class SimpleRequest(
   val headerParameters: List<HeaderParameter>,
   val returnType: Type,
   val params: List<Parameter>
-)
+) : Request()
+
+data class MultipartRequest(
+  val name: String,
+  val httpVerb: VerbAnnotationModel,
+  val headers: HeadersAnnotationModel?,
+  val parts: List<PartParameter>,
+  val queryParameters: List<QueryParameter>,
+  val pathParameters: List<PathParameter>,
+  val headerParameters: List<HeaderParameter>,
+  val returnType: Type,
+  val params: List<Parameter>
+) : Request()

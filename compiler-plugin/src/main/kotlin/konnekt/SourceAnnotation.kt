@@ -90,7 +90,13 @@ private fun CompilerContext.refine(scope: ParameterScope): SourceAnnotation? {
     }
 
     fun part(annotationEntry: KtAnnotationEntry): Part? {
-      TODO("Figure out semantics and runtime for @Part and @PartMap")
+      return when (annotationEntry.valueArguments.size) {
+        1 -> withArgumentResolvingContext(annotationEntry, setOf("value")) {
+          val value = get("value", 0, converter = CompilerContext::constantStringOrNull)
+          value?.let { Part(value) }
+        }
+        else -> parsingError("${annotationEntry.text} should have 1 argument: value")
+      }
     }
 
     fun field(annotationEntry: KtAnnotationEntry): Field? {

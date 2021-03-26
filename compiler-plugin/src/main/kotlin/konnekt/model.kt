@@ -90,7 +90,7 @@ object Body : SourceAnnotation("Body")
 
 data class Query(val value: String, val encoded: Boolean = false) : SourceAnnotation("Query")
 
-data class Part(val value: String, val encoding: String) : SourceAnnotation("Part")
+data class Part(val value: String) : SourceAnnotation("Part")
 
 data class Field(val value: String, val encoded: Boolean = false) : SourceAnnotation("Field")
 

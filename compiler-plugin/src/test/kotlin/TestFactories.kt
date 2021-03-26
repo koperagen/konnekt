@@ -14,3 +14,7 @@ suspend fun DescribeScope.it(name: String, expectOn: CompilerTest.Companion.() -
     }
   }
 }
+
+suspend fun DescribeScope.xit(name: String, expectOn: CompilerTest.Companion.() -> Assert, code: () -> String) {
+  xit(name) {}
+}
