@@ -4,7 +4,6 @@ import arrow.meta.plugin.testing.assertThis
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.core.spec.style.scopes.DescribeScope
 
 class ReturnTypeTests : DescribeSpec({
 
@@ -75,12 +74,6 @@ class ReturnTypeTests : DescribeSpec({
     }
   }
 })
-
-suspend fun DescribeScope.it(name: String, expectOn: CompilerTest.Companion.() -> Assert, code: () -> String) {
-  it(name) {
-    assertThis(CompilerTest({ konnektConfig }, { code().source }, expectOn))
-  }
-}
 
 private fun mockedClient() = """
    val klient = HttpClient(MockEngine) {
