@@ -108,7 +108,7 @@ class ClientInterfaceRequirementsTests : DescribeSpec({
         """.trimMargin()
       }
 
-      xit("must not have both @Body and @FormUrlEncoded", expectOn = {
+      it("must not have both @Body and @FormUrlEncoded", expectOn = {
         failsWith { it.contains("Method test cannot have both @FormUrlEncoded encoding and @Body parameter") }
       }) {
         """

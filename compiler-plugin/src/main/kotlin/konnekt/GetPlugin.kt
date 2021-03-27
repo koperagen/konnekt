@@ -158,6 +158,17 @@ fun Request.body() = when (this) {
     |  }
     |)""".trimMargin()
   }
+  is FormUrlEncodedRequest -> {
+    val `fields` = fields.joinToString("\n") {
+      """"${it.annotation.value}" to listOf(${it.name})"""
+    }
+
+    """
+    |body = FormDataContent(parametersOf(
+    |   $`fields`
+    |))
+    """.trimMargin()
+  }
 }
 
 

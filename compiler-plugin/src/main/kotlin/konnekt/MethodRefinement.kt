@@ -48,7 +48,24 @@ fun CompilerContext.verify(method: Method): Request? = withRefinedParameters(met
   verifyPath(method.httpVerb.path, it.pathParams) ?: return@withRefinedParameters null
 
   when (method.encoding) {
-    is FormUrlEncoded -> parsingError("FormUrlEncoded is not implemented")
+    is FormUrlEncoded -> {
+      if (it.bodyParams.isNotEmpty()) {
+        return@withRefinedParameters parsingError("Method ${method.name} cannot have both @FormUrlEncoded encoding and @Body parameter")
+      }
+      require(it.partParams.isEmpty())
+
+      FormUrlEncodedRequest(
+          method.name,
+          method.httpVerb,
+          method.headers,
+          it.fieldParams,
+          it.queryParams,
+          it.pathParams,
+          it.headerParams,
+          method.returnType,
+          method.params
+      )
+    }
     is Multipart -> {
       if (it.bodyParams.isNotEmpty()) {
         return@withRefinedParameters parsingError("Method ${method.name} cannot have both @Multipart encoding and @Body parameter")
@@ -138,6 +155,18 @@ data class MultipartRequest(
   override val httpVerb: VerbAnnotationModel,
   override val headers: HeadersAnnotationModel?,
   val parts: List<PartParameter>,
+  override val queryParameters: List<QueryParameter>,
+  override val pathParameters: List<PathParameter>,
+  override val headerParameters: List<HeaderParameter>,
+  override val returnType: Type,
+  override val params: List<Parameter>
+) : Request()
+
+data class FormUrlEncodedRequest(
+  override val name: String,
+  override val httpVerb: VerbAnnotationModel,
+  override val headers: HeadersAnnotationModel?,
+  val fields: List<FieldParameter>,
   override val queryParameters: List<QueryParameter>,
   override val pathParameters: List<PathParameter>,
   override val headerParameters: List<HeaderParameter>,
