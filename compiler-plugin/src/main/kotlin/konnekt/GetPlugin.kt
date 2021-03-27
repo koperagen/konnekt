@@ -121,13 +121,6 @@ fun KtNamedFunction.extractData(ctx: CompilerContext): Method? {
 }
 
 fun Request.render(): String {
-  return when (this) {
-    is SimpleRequest -> render()
-    is MultipartRequest -> render()
-  }
-}
-
-fun SimpleRequest.render(): String {
   require(headers == null) { "Runtime mapping for headers not yet implemented" }
   val path = substituteParams(httpVerb.path, pathParameters) // move outside
   val `httpVerb` = httpVerb.verb
@@ -138,7 +131,7 @@ fun SimpleRequest.render(): String {
   val `queryParameters` = queryParameters.joinToString("\n") {
     """parameter("${it.annotation.value}", ${it.name})"""
   }
-  val `body` = if (body == null) "" else "body = ${body.name}"
+  val `body` = body()
 
   return """
     |override suspend fun $name($`params`): $returnType {
@@ -151,37 +144,22 @@ fun SimpleRequest.render(): String {
   """.trimMargin()
 }
 
-fun MultipartRequest.render(): String {
-  require(headers == null) { "Runtime mapping for headers not yet implemented" }
-  val path = substituteParams(httpVerb.path, pathParameters) // move outside
-  val `httpVerb` = httpVerb.verb
-  val `params` = params.joinToString(",") { "${it.name}: ${it.type}" }
-  val `headerParameters` = headerParameters.joinToString("\n") {
-    """header("${it.annotation.value}", ${it.name}"""
-  }
-  val `queryParameters` = queryParameters.joinToString("\n") {
-    """parameter("${it.annotation.value}", ${it.name})"""
-  }
-  val `parts` = parts.joinToString("\n") {
-    """append("${it.annotation.value}", ${it.name})"""
-  }
-  val `body` = """
+fun Request.body() = when (this) {
+  is SimpleRequest -> if (body == null) "" else "body = ${body.name}"
+  is MultipartRequest -> {
+    val `parts` = parts.joinToString("\n") {
+      """append("${it.annotation.value}", ${it.name})"""
+    }
+
+    """
     |body = MultiPartFormDataContent(
     |  formData {
     |    $`parts`
     |  }
     |)""".trimMargin()
-
-  return """
-    |override suspend fun $name($`params`): $returnType {
-    |   return client.$`httpVerb`(path = "$path") {
-    |       $`headerParameters`
-    |       $`queryParameters`
-    |       $`body`
-    |   }
-    |}
-  """.trimMargin()
+  }
 }
+
 
 operator fun Any?.unaryPlus(): String = this?.toString() ?: ""
 

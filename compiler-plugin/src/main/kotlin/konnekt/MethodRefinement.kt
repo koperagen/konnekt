@@ -110,28 +110,37 @@ private fun CompilerContext.verifyPath(path: HttpPath, params: List<PathParamete
 
 private val PATH_VARIABLE_PATTERN = """\{(.+?)}""".toRegex()
 
-sealed class Request
+sealed class Request {
+  abstract val name: String
+  abstract val httpVerb: VerbAnnotationModel
+  abstract val headers: HeadersAnnotationModel?
+  abstract val queryParameters: List<QueryParameter>
+  abstract val pathParameters: List<PathParameter>
+  abstract val headerParameters: List<HeaderParameter>
+  abstract val returnType: Type
+  abstract val params: List<Parameter>
+}
 
 data class SimpleRequest(
-  val name: String,
-  val httpVerb: VerbAnnotationModel,
-  val headers: HeadersAnnotationModel?,
+  override val name: String,
+  override val httpVerb: VerbAnnotationModel,
+  override val headers: HeadersAnnotationModel?,
   val body: BodyParameter?,
-  val queryParameters: List<QueryParameter>,
-  val pathParameters: List<PathParameter>,
-  val headerParameters: List<HeaderParameter>,
-  val returnType: Type,
-  val params: List<Parameter>
+  override val queryParameters: List<QueryParameter>,
+  override val pathParameters: List<PathParameter>,
+  override val headerParameters: List<HeaderParameter>,
+  override val returnType: Type,
+  override val params: List<Parameter>
 ) : Request()
 
 data class MultipartRequest(
-  val name: String,
-  val httpVerb: VerbAnnotationModel,
-  val headers: HeadersAnnotationModel?,
+  override val name: String,
+  override val httpVerb: VerbAnnotationModel,
+  override val headers: HeadersAnnotationModel?,
   val parts: List<PartParameter>,
-  val queryParameters: List<QueryParameter>,
-  val pathParameters: List<PathParameter>,
-  val headerParameters: List<HeaderParameter>,
-  val returnType: Type,
-  val params: List<Parameter>
+  override val queryParameters: List<QueryParameter>,
+  override val pathParameters: List<PathParameter>,
+  override val headerParameters: List<HeaderParameter>,
+  override val returnType: Type,
+  override val params: List<Parameter>
 ) : Request()
