@@ -1,8 +1,5 @@
 import arrow.meta.plugin.testing.Assert
 import arrow.meta.plugin.testing.CompilerTest
-import arrow.meta.plugin.testing.Config
-import arrow.meta.plugin.testing.ConfigSyntax
-import arrow.meta.plugin.testing.Dependency
 import arrow.meta.plugin.testing.assertThis
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.style.FreeSpec
@@ -10,9 +7,6 @@ import io.kotest.core.spec.style.stringSpec
 import io.kotest.matchers.shouldBe
 import konnekt.*
 import java.lang.reflect.InvocationTargetException
-
-val CompilerTest.Companion.konnektConfig: List<Config>
-  get() = listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies)
 
 @Suppress("unused")
 class CodegenTest : FreeSpec({
@@ -203,23 +197,6 @@ fun String.annotationTest(functions: Iterable<String>) = stringSpec {
     ))
   }
 }
-
-val ConfigSyntax.ktorDependencies get() = addDependencies(
-    Dependency("ktor-client-core"),
-    Dependency("ktor-http"),
-    Dependency("ktor-http-jvm"),
-    Dependency("ktor-client-core-jvm"),
-    Dependency("ktor-client-cio"),
-    Dependency("ktor-client-json-jvm"),
-    Dependency("ktor-client-logging-jvm"),
-    Dependency("ktor-client-jackson"),
-    Dependency("ktor-client-mock"),
-    Dependency("ktor-client-mock-jvm"),
-    Dependency("kotlinx-coroutines-core-jvm"),
-    Dependency("jackson-databind"),
-    Dependency("jackson-module-kotlin"),
-    Dependency("prelude")
-)
 
 infix fun String.shouldBeIgnoringWhitespaces(other: String) = this.ignoringWhitespaces() shouldBe other.ignoringWhitespaces()
 
