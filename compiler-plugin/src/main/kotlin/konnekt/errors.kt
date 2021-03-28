@@ -5,8 +5,6 @@ import konnekt.prelude.Client
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.psi.KtAnnotated
 
-fun Any?.TODO(cause: String): Nothing = throw NotImplementedError(cause)
-
 val String.noCompanion
   get() = "${Client::class.java.simpleName} annotated interface $this needs to declare companion object."
 
@@ -21,6 +19,15 @@ val String.noVerb
 
 val String.noClientAnnotation
   get() = "interface $this should be annotated with ${ClientDeclaration.fqEntry}"
+
+val String.severalBodyParameters
+  get() = "Method $this should have only 0 or 1 @Body parameter"
+
+val String.requiredEncoding: (MimeEncodingsDeclaration) -> String
+  get() = { encoding ->
+    "Method $this should be annotated with ${encoding.simpleEntry} " +
+      "to declare ${encoding.components.joinToString { it.simpleEntry }} parameters"
+  }
 
 internal fun CompilerContext.knownError(message: String, element: KtAnnotated? = null): Unit =
     ctx.messageCollector?.report(CompilerMessageSeverity.ERROR, message, null) ?: Unit

@@ -29,6 +29,7 @@ interface AnnotationDeclaration {
 val AnnotationDeclaration.names: List<String> get() = listOf(declaration.simpleName, declaration.name)
 
 val AnnotationDeclaration.fqEntry: String get() = "@${declaration.name}"
+val AnnotationDeclaration.simpleEntry: String get() = "@${declaration.simpleName}"
 
 object ClientDeclaration : AnnotationDeclaration {
   override val declaration: Class<*> = Client::class.java
@@ -47,8 +48,14 @@ object HeadersDeclaration : AnnotationDeclaration {
   override val declaration = Headers::class.java
 }
 
-enum class MimeEncodingsDeclaration(override val declaration: Class<*>) : AnnotationDeclaration {
-  MULTIPART(Multipart::class.java), FORM_URL_ENCODED(FormUrlEncoded::class.java)
+enum class MimeEncodingsDeclaration(
+  override val declaration: Class<*>,
+  val components: List<AnnotationDeclaration>
+) : AnnotationDeclaration {
+
+  MULTIPART(Multipart::class.java, listOf(SourcesDeclaration.PART)),
+  FORM_URL_ENCODED(FormUrlEncoded::class.java, listOf(SourcesDeclaration.FIELD))
+
 }
 
 enum class VerbsDeclaration(override val declaration: Class<*>): AnnotationDeclaration {

@@ -1,8 +1,11 @@
+import arrow.meta.plugin.testing.AssertSyntax
 import io.kotest.core.spec.style.DescribeSpec
 import konnekt.MimeEncodingsDeclaration
 import konnekt.noCompanion
 import konnekt.noVerb
 import konnekt.notSuspended
+import konnekt.requiredEncoding
+import konnekt.severalBodyParameters
 import konnekt.superTypesNotAllowed
 
 class ClientInterfaceRequirementsTests : DescribeSpec({
@@ -125,7 +128,56 @@ class ClientInterfaceRequirementsTests : DescribeSpec({
           |}
         """.trimMargin()
       }
+
+      it("must have only 0 or 1 @Body parameter", expectOn = { failsWithError("test".severalBodyParameters) }) {
+        """
+          //metadebug
+          import konnekt.prelude.*
+          @Client
+          interface Test {
+            @GET("/test")
+            suspend fun test(@Body foo: String, @Body bar: String): String
+            
+            companion object
+          }
+        """.trimIndent()
+      }
+
+      it("must have @Multipart annotation to declare @Part parameters", expectOn = {
+        failsWithError("test".requiredEncoding(MimeEncodingsDeclaration.MULTIPART))
+      }) {
+        """
+          //metadebug
+          import konnekt.prelude.*
+          @Client
+          interface Test {
+            @GET("/test")
+            suspend fun test(@Part("foo") foo: String): String
+          
+            companion object
+          }
+          
+        """.trimIndent()
+      }
+
+      it("must have @FormUrlEncoded annotation to declare @Field parameters", expectOn = {
+        failsWithError("test".requiredEncoding(MimeEncodingsDeclaration.FORM_URL_ENCODED))
+      }) {
+        """
+          //metadebug
+          import konnekt.prelude.*
+          @Client
+          interface Test {
+            @GET("/test")
+            suspend fun test(@Field("foo") foo: String): String
+          
+            companion object
+          }
+        """.trimIndent()
+      }
     }
 
   }
 })
+
+fun AssertSyntax.failsWithError(error: String) = failsWith { it.contains(error) }

@@ -47,13 +47,35 @@ fun <T> CompilerContext.withRefinedParameters(method: Method, f: CompilerContext
 fun CompilerContext.verify(method: Method): Request? = withRefinedParameters(method) {
   verifyPath(method.httpVerb.path, it.pathParams) ?: return@withRefinedParameters null
 
-  when (method.encoding) {
-    is FormUrlEncoded -> {
-      if (it.bodyParams.isNotEmpty()) {
-        return@withRefinedParameters parsingError("Method ${method.name} cannot have both @FormUrlEncoded encoding and @Body parameter")
-      }
-      require(it.partParams.isEmpty())
+  val noFieldParameters: () -> Boolean = {
+    if (it.fieldParams.isNotEmpty()) {
+      parsingError<Unit>(method.name.requiredEncoding(MimeEncodingsDeclaration.FORM_URL_ENCODED))
+      false
+    } else {
+      true
+    }
+  }
 
+  val noPartParameters: () -> Boolean = {
+    if (it.partParams.isNotEmpty()) {
+      parsingError<Unit>(method.name.requiredEncoding(MimeEncodingsDeclaration.MULTIPART))
+      false
+    } else {
+      true
+    }
+  }
+
+  val noBodyParameters: (String) -> Boolean = { annotation ->
+    if (it.bodyParams.isNotEmpty()) {
+      parsingError<Unit>("Method ${method.name} cannot have both @${annotation} encoding and @Body parameter")
+      false
+    } else {
+      true
+    }
+  }
+
+  when (method.encoding) {
+    is FormUrlEncoded -> computeIf(noPartParameters, { noBodyParameters("FormUrlEncoded") }) {
       FormUrlEncodedRequest(
           method.name,
           method.httpVerb,
@@ -66,12 +88,7 @@ fun CompilerContext.verify(method: Method): Request? = withRefinedParameters(met
           method.params
       )
     }
-    is Multipart -> {
-      if (it.bodyParams.isNotEmpty()) {
-        return@withRefinedParameters parsingError("Method ${method.name} cannot have both @Multipart encoding and @Body parameter")
-      }
-      require(it.fieldParams.isEmpty())
-
+    is Multipart -> computeIf(noFieldParameters, { noBodyParameters("Multipart") }) {
       MultipartRequest(
           method.name,
           method.httpVerb,
@@ -84,13 +101,11 @@ fun CompilerContext.verify(method: Method): Request? = withRefinedParameters(met
           method.params
       )
     }
-    null -> {
-      require(it.fieldParams.isEmpty())
-      require(it.partParams.isEmpty())
+    null -> computeIf(noFieldParameters, noPartParameters) {
       val body = when (it.bodyParams.size) {
         0 -> null
         1 -> it.bodyParams[0]
-        else -> TODO()
+        else -> return@computeIf parsingError(method.name.severalBodyParameters)
       }
 
       SimpleRequest(
