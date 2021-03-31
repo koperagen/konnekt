@@ -126,7 +126,7 @@ fun Request.render(): String {
   val `httpVerb` = httpVerb.verb
   val `params` = params.joinToString(",") { "${it.name}: ${it.type}" }
   val `headerParameters` = headerParameters.joinToString("\n") {
-    """header("${it.annotation.value}", ${it.name}"""
+    """header("${it.annotation.value}", ${it.name})"""
   }
   val `queryParameters` = queryParameters.joinToString("\n") {
     """parameter("${it.annotation.value}", ${it.name})"""
@@ -160,7 +160,7 @@ fun Request.body() = when (this) {
   }
   is FormUrlEncodedRequest -> {
     val `fields` = fields.joinToString("\n") {
-      """"${it.annotation.value}" to listOf(${it.name})"""
+      """"${it.annotation.value}" to listOf(${it.name}.toString())"""
     }
 
     """

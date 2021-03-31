@@ -48,7 +48,13 @@ fun mimeEncodingFunctions(encoding: MimeEncodingsDeclaration): Iterable<String> 
 private fun annotationVariants(it: SourcesDeclaration): List<String> {
   return when (it) {
     SourcesDeclaration.BODY -> it.names.map { "@$it" }
-    SourcesDeclaration.QUERY, SourcesDeclaration.FIELD, SourcesDeclaration.PATH -> (it.names product stringLiterals.named("value"))
+    SourcesDeclaration.PATH -> (it.names product listOf("\"p\"").named("value"))
+        .let { oneArg ->
+          val stringOnly = oneArg.map { (name, str) -> "@$name($str)" }
+          val complete = (oneArg product booleanLiterals.named("encoded")).map { (name, str, bool) -> "@$name($str, $bool)" }
+          stringOnly + complete
+        }
+    SourcesDeclaration.QUERY, SourcesDeclaration.FIELD -> (it.names product stringLiterals.named("value"))
         .let { oneArg ->
           val stringOnly = oneArg.map { (name, str) -> "@$name($str)" }
           val complete = (oneArg product booleanLiterals.named("encoded")).map { (name, str, bool) -> "@$name($str, $bool)" }
