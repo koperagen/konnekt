@@ -1,4 +1,3 @@
-import arrow.meta.plugin.testing.AssertSyntax
 import io.kotest.core.spec.style.DescribeSpec
 import konnekt.MimeEncodingsDeclaration
 import konnekt.noCompanion
@@ -179,5 +178,3 @@ class ClientInterfaceRequirementsTests : DescribeSpec({
 
   }
 })
-
-fun AssertSyntax.failsWithError(error: String) = failsWith { it.contains(error) }

@@ -156,8 +156,6 @@ class CodegenTest : FreeSpec({
   }
 })
 
-infix fun String.expect(assert: CompilerTest.Companion.() -> Assert) = assertThis(CompilerTest({ konnektConfig }, { this@expect.source }, assert))
-
 fun interfaceTemplate(fn: () -> String): String {
   return """
     |//metadebug
@@ -197,7 +195,3 @@ fun String.annotationTest(functions: Iterable<String>) = stringSpec {
     ))
   }
 }
-
-infix fun String.shouldBeIgnoringWhitespaces(other: String) = this.ignoringWhitespaces() shouldBe other.ignoringWhitespaces()
-
-fun String.ignoringWhitespaces() = filterNot { it.isWhitespace() }
