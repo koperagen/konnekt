@@ -21,9 +21,6 @@ plugins {
     id("io.github.koperagen.konnekt") version "1.4.10-SNAPSHOT"
 }
 
-group = "io.github.koperagen"
-version = "1.0-SNAPSHOT"
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -59,7 +56,7 @@ Configured Gradle projects with some sample code available at [Playground reposi
 - [x] Diagnostics and quick fixes to restrict DSL usages
 - [x] Generate sources for limited subset of annotations (basic GET, DELETE, POST etc)
 - [x] Gradle plugin to apply compiler plugin to project
-- [ ] Implement FormUrlEncoded & Multipart
+- [x] Implement FormUrlEncoded & Multipart
 - [ ] Resolve annotation & types via Typed Quotes
 - [ ] Add & test android build variants
 - [ ] Register IDE Plugins via MetaIde
