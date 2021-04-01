@@ -1,6 +1,13 @@
-package konnekt
+package konnekt.annotationParsing
 
 import arrow.meta.phases.CompilerContext
+import konnekt.FormUrlEncoded
+import konnekt.MimeEncoding
+import konnekt.MimeEncodingsDeclaration
+import konnekt.Multipart
+import konnekt.names
+import konnekt.parsingError
+import konnekt.referencedName
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.psiUtil.containingClass

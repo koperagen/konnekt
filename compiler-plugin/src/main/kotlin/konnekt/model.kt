@@ -1,5 +1,10 @@
 package konnekt
 
+import konnekt.annotationParsing.MimeEncodingScope
+import konnekt.annotationParsing.ParameterScope
+import konnekt.annotationParsing.VerbAnnotationScope
+import konnekt.annotationParsing.mimeEncoding
+import konnekt.annotationParsing.verbAnnotation
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtTypeReference
 

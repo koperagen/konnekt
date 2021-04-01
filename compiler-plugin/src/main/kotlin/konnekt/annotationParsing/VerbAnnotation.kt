@@ -1,6 +1,10 @@
-package konnekt
+package konnekt.annotationParsing
 
 import arrow.meta.phases.CompilerContext
+import konnekt.Verb
+import konnekt.VerbAnnotationModel
+import konnekt.VerbsDeclaration
+import konnekt.parsingError
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtUserType
@@ -35,7 +39,7 @@ class VerbAnnotationScope(
 )
 
 fun verbAnnotation(annotationEntry: KtAnnotationEntry): VerbAnnotationScope? {
-  val verb =  when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
+  val verb = when (annotationEntry.typeReference?.typeElement?.safeAs<KtUserType>()?.referencedName) {
     "GET" -> Verb.GET
     "DELETE" -> Verb.DELETE
     "HEAD" -> Verb.HEAD

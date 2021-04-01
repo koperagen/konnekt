@@ -1,6 +1,16 @@
-package konnekt
+package konnekt.annotationParsing
 
 import arrow.meta.phases.CompilerContext
+import konnekt.Body
+import konnekt.Field
+import konnekt.Header
+import konnekt.Parameter
+import konnekt.Part
+import konnekt.Path
+import konnekt.Query
+import konnekt.SourceAnnotation
+import konnekt.SourcesDeclaration
+import konnekt.parsingError
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter

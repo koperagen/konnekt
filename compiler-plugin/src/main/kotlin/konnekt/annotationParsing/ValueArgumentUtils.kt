@@ -1,6 +1,8 @@
-package konnekt
+package konnekt.annotationParsing
 
 import arrow.meta.phases.CompilerContext
+import konnekt.parsingError
+import konnekt.referencedName
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtConstantExpression
 import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry

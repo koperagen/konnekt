@@ -8,6 +8,10 @@ import arrow.meta.quotes.ScopedList
 import arrow.meta.quotes.Transform
 import arrow.meta.quotes.classDeclaration
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
+import konnekt.annotationParsing.headers
+import konnekt.annotationParsing.mimeEncoding
+import konnekt.annotationParsing.parameters
+import konnekt.annotationParsing.verbs
 import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtAnnotated

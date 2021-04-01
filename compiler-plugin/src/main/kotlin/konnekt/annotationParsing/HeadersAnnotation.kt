@@ -1,6 +1,10 @@
-package konnekt
+package konnekt.annotationParsing
 
 import arrow.meta.phases.CompilerContext
+import konnekt.HeadersAnnotationModel
+import konnekt.HeadersDeclaration
+import konnekt.names
+import konnekt.parsingError
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtUserType
