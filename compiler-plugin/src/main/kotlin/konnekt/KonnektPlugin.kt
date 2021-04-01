@@ -15,7 +15,6 @@ import konnekt.annotationParsing.verbs
 import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtAnnotated
-import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
@@ -25,7 +24,7 @@ class KonnektPlugin : Meta {
 }
 
 val Meta.konnektPlugin: CliPlugin
-  get() = "GET Plugin" {
+  get() = "Konnekt Plugin" {
     meta(
       classDeclaration(ctx, ::isKonnektClient) { c ->
         if (c.companionObjects.isEmpty()) {
@@ -86,16 +85,6 @@ fun isKonnektClient(ktClass: KtClass): Boolean = ktClass.isInterface() && ktClas
 
 fun KtAnnotated.hasVerbAnnotation() = hasAnnotation(*VerbsDeclaration.values().flatMap { it.names }.toTypedArray())
 
-fun KtAnnotated.hasAnnotation(
-    vararg annotationNames: String
-): Boolean {
-  val names = annotationNames.toHashSet()
-  val predicate: (KtAnnotationEntry) -> Boolean = {
-    it.referencedName in names
-  }
-  return annotationEntries.any(predicate)
-}
-
 private val ktorImports: String = """
   |import io.ktor.client.*
   |import io.ktor.client.request.*
@@ -105,7 +94,7 @@ private val ktorImports: String = """
 fun KtNamedFunction.generateDefinition(ctx: CompilerContext, func: NamedFunction): String? {
   val method = extractData(ctx)
   return if (method != null) {
-    ctx.verify(method)?.render()
+    ctx.refine(method)?.render()
   } else {
     return null
   }

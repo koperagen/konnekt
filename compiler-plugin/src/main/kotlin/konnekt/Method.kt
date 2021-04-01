@@ -1,13 +1,5 @@
 package konnekt
 
-import konnekt.annotationParsing.MimeEncodingScope
-import konnekt.annotationParsing.ParameterScope
-import konnekt.annotationParsing.VerbAnnotationScope
-import konnekt.annotationParsing.mimeEncoding
-import konnekt.annotationParsing.verbAnnotation
-import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.KtTypeReference
-
 data class Method(
   val name: String,
   val httpVerb: VerbAnnotationModel,
@@ -15,15 +7,6 @@ data class Method(
   val encoding: MimeEncoding? = null,
   val params: List<Parameter>,
   val returnType: Type
-)
-
-class MethodScope(
-  val function: KtNamedFunction,
-  val name: String = function.nameAsSafeName.identifier,
-  val httpVerbs: List<VerbAnnotationScope> = function.annotationEntries.mapNotNull { verbAnnotation(it) },
-  val encoding: List<MimeEncodingScope> = function.annotationEntries.mapNotNull { mimeEncoding(it) },
-  val params: List<ParameterScope> = function.valueParameters.map { ParameterScope(it) },
-  val returnType: KtTypeReference? = function.typeReference
 )
 
 enum class Verb {
@@ -99,5 +82,4 @@ data class Part(val value: String) : SourceAnnotation("Part")
 
 data class Field(val value: String, val encoded: Boolean = false) : SourceAnnotation("Field")
 
-// TODO HeaderMap
 data class Header(val value: String) : SourceAnnotation("Header")
