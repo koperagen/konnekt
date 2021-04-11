@@ -16,7 +16,7 @@ repositories {
   jcenter()
   maven(url = "https://kotlin.bintray.com/ktor")
   maven(url = "https://jcenter.bintray.com")
-  maven(url = "https://oss.jfrog.org/artifactory/oss-snapshot-local/")
+  maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
@@ -104,5 +104,11 @@ publishing {
       artifactId = "konnekt-plugin"
       artifact(pluginArtifact)
     }
+  }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+  kotlinOptions {
+    jvmTarget = "1.8"
   }
 }
