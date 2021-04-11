@@ -9,7 +9,7 @@ repositories {
 //    mavenLocal()
     mavenCentral()
     maven(url = "https://dl.bintray.com/celtric/maven")
-    maven(url = "https://oss.jfrog.org/artifactory/oss-snapshot-local/")
+    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
@@ -24,7 +24,7 @@ intellij {
     version = "2020.2.1"
     setPlugins(
         "gradle", "gradle-java", "java", "org.jetbrains.kotlin:${KOTLIN_IDEA_VERSION}",
-        "git4idea", "io.arrow-kt.arrow:1.4.10-SNAPSHOT-1616003761"
+        "git4idea", "io.arrow-kt.arrow:1.4.10-SNAPSHOT-1617888072"
     )
 
     pluginsRepo {
