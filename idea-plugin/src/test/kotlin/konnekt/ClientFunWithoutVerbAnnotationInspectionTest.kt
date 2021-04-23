@@ -1,13 +1,11 @@
 package konnekt
 
-import arrow.meta.ide.IdeMetaPlugin
-import arrow.meta.ide.testing.IdeTest
-import arrow.meta.ide.testing.env.IdeTestSetUp
-import arrow.meta.ide.testing.env.ideTest
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixture4TestCase
+import io.kotest.matchers.collections.shouldExist
 import org.junit.Test
 
-class ClientFunWithoutVerbAnnotationInspectionTest : IdeTestSetUp() {
+class ClientFunWithoutVerbAnnotationInspectionTest1 : LightPlatformCodeInsightFixture4TestCase() {
 
   private object Code {
     val before = """
@@ -24,22 +22,10 @@ class ClientFunWithoutVerbAnnotationInspectionTest : IdeTestSetUp() {
   }
 
   @Test
-  fun `verb annotation check for @Client interface`() =
-      ideTest(
-        myFixture,
-        IdeMetaPlugin()
-      ) {
-        listOf(
-          IdeTest(
-            code = Code.before,
-            test = { code, myFixture, ctx ->
-              collectInspections(code, myFixture, listOf(ctx.clientFunWithoutVerbAnnotationInspection))
-            },
-            result = resolvesWhen("") { result ->
-              val highlight = result.firstOrNull { it.description == "Foo".noVerb }
-              highlight != null && highlight.severity == HighlightSeverity.ERROR
-            }
-          )
-        )
-      }
+  fun `verb annotation check for @Client interface`() {
+    myFixture.configureByText("test.kt",  Code.before)
+    myFixture.enableInspections(ClientFunWithoutVerbAnnotationInspection())
+    val result = myFixture.doHighlighting().filterNotNull()
+    result shouldExist { it.description == "Foo".noVerb && it.severity == HighlightSeverity.ERROR }
+  }
 }

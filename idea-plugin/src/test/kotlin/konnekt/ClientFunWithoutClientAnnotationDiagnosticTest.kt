@@ -1,13 +1,11 @@
 package konnekt
 
-import arrow.meta.ide.IdeMetaPlugin
-import arrow.meta.ide.testing.IdeTest
-import arrow.meta.ide.testing.env.IdeTestSetUp
-import arrow.meta.ide.testing.env.ideTest
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixture4TestCase
+import io.kotest.matchers.collections.shouldExist
 import org.junit.Test
 
-class ClientFunWithoutClientAnnotationDiagnosticTest : IdeTestSetUp() {
+class ClientFunWithoutClientAnnotationDiagnosticTest1 : LightPlatformCodeInsightFixture4TestCase() {
 
   private object InsideInterface {
     val before = """
@@ -37,33 +35,19 @@ class ClientFunWithoutClientAnnotationDiagnosticTest : IdeTestSetUp() {
   }
 
   @Test
-  fun `@Client annotation check for fun inside interface`() = ideTest(myFixture, IdeMetaPlugin()) {
-    listOf(
-      IdeTest(
-        code = InsideInterface.before,
-        test = { code, myFixture, ctx ->
-          collectInspections(code, myFixture, listOf(ctx.clientFunWithoutClientAnnotationInspection))
-        },
-        result = resolvesWhen("") {
-          val highlight = it.firstOrNull { it.description == "Foo".noClientAnnotation }
-          highlight != null && highlight.severity == HighlightSeverity.ERROR
-        }
-      )
-    )
+  fun `@Client annotation check for fun inside interface`() {
+    myFixture.configureByText("test.kt", InsideInterface.before)
+    myFixture.enableInspections(ClientFunWithoutClientAnnotationInspection())
+    val result = myFixture.doHighlighting().filterNotNull()
+    result shouldExist { it.description == "Foo".noClientAnnotation && it.severity == HighlightSeverity.ERROR }
   }
 
   @Test
-  fun `add @Client annotation quick fix for interface`() = ideTest(myFixture, IdeMetaPlugin()) {
-    listOf(
-      IdeTest(
-        code = InsideInterface.before,
-        test = { code, myFixture, ctx ->
-          applyQuickFix(code, InsideInterface.after, "Annotate interface with ",
-              myFixture, listOf(ctx.clientFunWithoutClientAnnotationInspection))
-        },
-        result = resolves()
-      )
-    )
+  fun `add @Client annotation quick fix for interface`() {
+    myFixture.configureByText("test.kt", InsideInterface.before)
+    myFixture.enableInspections(ClientFunWithoutClientAnnotationInspection())
+    myFixture.launchAction(myFixture.findSingleIntention("Annotate interface with "))
+    myFixture.checkResult(InsideInterface.after)
   }
 
 }

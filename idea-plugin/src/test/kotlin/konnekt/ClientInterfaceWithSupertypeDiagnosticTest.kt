@@ -1,10 +1,8 @@
 package konnekt
 
-import arrow.meta.ide.IdeMetaPlugin
-import arrow.meta.ide.testing.IdeTest
-import arrow.meta.ide.testing.env.IdeTestSetUp
-import arrow.meta.ide.testing.env.ideTest
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixture4TestCase
+import io.kotest.matchers.collections.shouldExist
 import org.junit.Test
 
 private object Code {
@@ -35,43 +33,21 @@ private object Code {
   """.trimMargin()
 }
 
-class ClientInterfaceWithSupertypeDiagnosticTest : IdeTestSetUp() {
+class ClientInterfaceWithSupertypeDiagnosticTest1 : LightPlatformCodeInsightFixture4TestCase() {
 
   @Test
-  fun `supertypes check for annotated interface`() =
-    ideTest(
-        myFixture = myFixture,
-        ctx = IdeMetaPlugin()
-    ) {
-      listOf(
-        IdeTest(
-          code = Code.before,
-          test = { code, myFixture, ctx ->
-            collectInspections(code, myFixture, inspections = listOf(ctx.clientInterfaceWithSupertypeInspection))
-          },
-          result = resolvesWhen("") { result ->
-            val highlight = result.firstOrNull { it.description == "Bar".superTypesNotAllowed }
-            highlight != null && highlight.severity == HighlightSeverity.ERROR
-          }
-        )
-      )
-    }
+  fun `supertypes check for annotated interface`() {
+    myFixture.configureByText("test.kt", Code.before)
+    myFixture.enableInspections(ClientInterfaceWithSupertypeInspection())
+    val result = myFixture.doHighlighting().filterNotNull()
+    result shouldExist { it.description == "Bar".superTypesNotAllowed && it.severity == HighlightSeverity.ERROR }
+  }
 
   @Test
-  fun `remove supertypes quick fix for annotated interface`() =
-    ideTest(
-        myFixture = myFixture,
-        ctx = IdeMetaPlugin()
-    ) {
-      listOf(
-        IdeTest(
-          code = Code.before,
-          test = { code, myFixture, ctx ->
-            applyQuickFix(code, Code.after, "Remove supertypes", myFixture, listOf(ctx.clientInterfaceWithSupertypeInspection))
-          },
-          result = resolves()
-        )
-      )
-    }
-
+  fun `remove supertypes quick fix for annotated interface`() {
+    myFixture.configureByText("test.kt", Code.before)
+    myFixture.enableInspections(ClientInterfaceWithSupertypeInspection())
+    myFixture.launchAction(myFixture.findSingleIntention("Remove supertypes"))
+    myFixture.checkResult(Code.after)
+  }
 }

@@ -15,7 +15,7 @@ val IdeMetaPlugin.clientFunWithoutVerbAnnotationDiagnostic
   get() = "Client fun without verb annotation diagnostic" {
     meta(
       addLocalInspection(
-        clientFunWithoutVerbAnnotationInspection,
+        ClientFunWithoutVerbAnnotationInspection(),
         HighlightDisplayLevel.ERROR,
         "ClientFunWithoutVerbAnnotation",
         "Client fun without verb annotation",

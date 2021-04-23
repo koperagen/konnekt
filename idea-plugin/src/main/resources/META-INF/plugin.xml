@@ -15,4 +15,13 @@
     <depends>org.jetbrains.kotlin</depends>
     <depends>io.arrow-kt.arrow</depends>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection
+                implementationClass="konnekt.ClientFunOutsideInterfaceInspection"
+                displayName="clientFunOutsideInterfaceDiagnostic"
+                shortName="ClientFunOutsideInterfaceDiagnostic"
+                groupPath="konnekt.ClientInterface"
+                groupName="Konnekt"/>
+    </extensions>
+
 </idea-plugin>

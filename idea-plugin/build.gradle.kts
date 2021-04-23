@@ -17,6 +17,7 @@ dependencies {
     implementation("io.arrow-kt:idea-plugin:1.4.10-SNAPSHOT") {
       exclude(group = "io.arrow-kt", module = "compiler-plugin")
     }
+    testImplementation("io.kotest:kotest-assertions-core:4.3.1")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/

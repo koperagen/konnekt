@@ -1,10 +1,8 @@
 package konnekt
 
-import arrow.meta.ide.IdeMetaPlugin
-import arrow.meta.ide.testing.IdeTest
-import arrow.meta.ide.testing.env.IdeTestSetUp
-import arrow.meta.ide.testing.env.ideTest
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixture4TestCase
+import io.kotest.matchers.collections.shouldExist
 import org.junit.Test
 
 object CompanionObjectInspectionCode {
@@ -28,44 +26,22 @@ object CompanionObjectInspectionCode {
   """.trimIndent()
 }
 
-class CompanionObjectDiagnosticTest : IdeTestSetUp() {
+class CompanionObjectDiagnosticTest1 : LightPlatformCodeInsightFixture4TestCase() {
 
   @Test
-  fun `companion object check for annotated interface`() =
-    ideTest(
-      myFixture = myFixture,
-      ctx = IdeMetaPlugin()
-    ) {
-      listOf(
-        IdeTest(
-          code = CompanionObjectInspectionCode.interfaceDeclaration,
-          test = { code, myFixture, ctx ->
-            collectInspections(code, myFixture, inspections = listOf(ctx.companionObjectInspection))
-          },
-          result = resolvesWhen("") { result ->
-            val highlight = result.firstOrNull { it.description == "Test".noCompanion }
-            highlight != null && highlight.severity == HighlightSeverity.ERROR
-          }
-        )
-      )
-    }
+  fun `companion object check for annotated interface`() {
+    myFixture.configureByText("test.kt", CompanionObjectInspectionCode.interfaceDeclaration)
+    myFixture.enableInspections(CompanionObjectInspection())
+    val result = myFixture.doHighlighting().filterNotNull()
+    result shouldExist { it.description == "Test".noCompanion && it.severity == HighlightSeverity.ERROR }
+  }
 
   @Test
-  fun `companion object quick fix for annotated interface`() =
-    ideTest(
-      myFixture = myFixture,
-      ctx = IdeMetaPlugin()
-    ) {
-      listOf(
-        IdeTest(
-          code = CompanionObjectInspectionCode.interfaceDeclaration,
-          test = { code, myFixture, ctx ->
-            applyQuickFix(code, CompanionObjectInspectionCode.expectedDeclaration, "Add companion object ",
-                myFixture, listOf(ctx.companionObjectInspection))
-          },
-          result = resolves()
-        )
-      )
-    }
+  fun `companion object quick fix for annotated interface`() {
+    myFixture.configureByText("test.kt", CompanionObjectInspectionCode.interfaceDeclaration)
+    myFixture.enableInspections(CompanionObjectInspection())
+    myFixture.launchAction(myFixture.findSingleIntention("Add companion object"))
+    myFixture.checkResult(CompanionObjectInspectionCode.expectedDeclaration)
+  }
 
 }
