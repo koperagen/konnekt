@@ -1,7 +1,7 @@
 package konnekt
 
-import arrow.meta.ide.IdeMetaPlugin
-import arrow.meta.ide.invoke
+//import arrow.meta.ide.IdeMetaPlugin
+//import arrow.meta.ide.invoke
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.editor.Editor
@@ -14,40 +14,40 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 
-val IdeMetaPlugin.clientFunWithoutClientAnnotationDiagnostic
-  get() = "ClientFunWithoutClientAnnotationDiagnostic" {
-    meta(
-      addLocalInspection(
-        ClientFunWithoutClientAnnotationInspection(),
-        clientInterfacePath,
-        konnektGroupName,
-        HighlightDisplayLevel.ERROR
-      )
-    )
-  }
+//val IdeMetaPlugin.clientFunWithoutClientAnnotationDiagnostic
+//  get() = "ClientFunWithoutClientAnnotationDiagnostic" {
+//    meta(
+//      addLocalInspection(
+//        ClientFunWithoutClientAnnotationInspection(),
+//        clientInterfacePath,
+//        konnektGroupName,
+//        HighlightDisplayLevel.ERROR
+//      )
+//    )
+//  }
 
-val IdeMetaPlugin.clientFunWithoutClientAnnotationInspection: AbstractApplicabilityBasedInspection<KtNamedFunction>
-  get() = applicableInspection(
-    defaultFixText = "Annotate interface with ${ClientDeclaration.fqEntry}}",
-    staticDescription = "Client fun without ${ClientDeclaration.fqEntry}}",
-    fixText = { "Annotate interface with ${ClientDeclaration.fqEntry}}" },
-    kClass = KtNamedFunction::class.java,
-    highlightingRange = { it.nameIdentifierTextRangeInThis() },
-    inspectionHighlightType = { ProblemHighlightType.ERROR },
-    inspectionText = { fn ->
-      val klass = fn.containingClass() ?: return@applicableInspection ""
-      klass.nameAsSafeName.asString().noClientAnnotation
-    },
-    applyTo = { fn, _, _ ->
-      val klass = fn.containingClass() ?: return@applicableInspection
-      val entry = createAnnotationEntry(ClientDeclaration.fqEntry)
-      klass.addAnnotationEntry(entry)
-    },
-    isApplicable = { fn ->
-      val klass = fn.containingClass() ?: return@applicableInspection false
-      fn.hasVerbAnnotation() && !klass.isKonnektClient() && klass.isInterface()
-    }
-  )
+//val IdeMetaPlugin.clientFunWithoutClientAnnotationInspection: AbstractApplicabilityBasedInspection<KtNamedFunction>
+//  get() = applicableInspection(
+//    defaultFixText = "Annotate interface with ${ClientDeclaration.fqEntry}}",
+//    staticDescription = "Client fun without ${ClientDeclaration.fqEntry}}",
+//    fixText = { "Annotate interface with ${ClientDeclaration.fqEntry}}" },
+//    kClass = KtNamedFunction::class.java,
+//    highlightingRange = { it.nameIdentifierTextRangeInThis() },
+//    inspectionHighlightType = { ProblemHighlightType.ERROR },
+//    inspectionText = { fn ->
+//      val klass = fn.containingClass() ?: return@applicableInspection ""
+//      klass.nameAsSafeName.asString().noClientAnnotation
+//    },
+//    applyTo = { fn, _, _ ->
+//      val klass = fn.containingClass() ?: return@applicableInspection
+//      val entry = createAnnotationEntry(ClientDeclaration.fqEntry)
+//      klass.addAnnotationEntry(entry)
+//    },
+//    isApplicable = { fn ->
+//      val klass = fn.containingClass() ?: return@applicableInspection false
+//      fn.hasVerbAnnotation() && !klass.isKonnektClient() && klass.isInterface()
+//    }
+//  )
 
 class ClientFunWithoutClientAnnotationInspection : AbstractApplicabilityBasedInspection<KtNamedFunction>(KtNamedFunction::class.java) {
   override val defaultFixText: String = "Annotate interface with ${ClientDeclaration.fqEntry}}"

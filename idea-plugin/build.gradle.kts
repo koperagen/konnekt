@@ -8,30 +8,22 @@ val KOTLIN_IDEA_VERSION: String by project
 repositories {
 //    mavenLocal()
     mavenCentral()
-    maven(url = "https://dl.bintray.com/celtric/maven")
-    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
+//    maven(url = "https://dl.bintray.com/celtric/maven")
+//    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
     implementation(project(":compiler-plugin", configuration = "shadow"))
-    implementation("io.arrow-kt:idea-plugin:1.4.10-SNAPSHOT") {
-      exclude(group = "io.arrow-kt", module = "compiler-plugin")
-    }
+//    implementation("io.arrow-kt:idea-plugin:1.4.10-SNAPSHOT") {
+//      exclude(group = "io.arrow-kt", module = "compiler-plugin")
+//    }
     testImplementation("io.kotest:kotest-assertions-core:4.3.1")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = "2020.2.1"
-    setPlugins(
-        "gradle", "gradle-java", "java", "org.jetbrains.kotlin:${KOTLIN_IDEA_VERSION}",
-        "git4idea", "io.arrow-kt.arrow:1.4.10-SNAPSHOT-1617888072"
-    )
-
-    pluginsRepo {
-        custom("https://meta.arrow-kt.io/idea-plugin/latest-snapshot/updatePlugins.xml")
-        maven("https://plugins.jetbrains.com/maven")
-    }
+  version = "2020.3"
+  setPlugins("java", "org.jetbrains.kotlin")
 }
 
 tasks {
