@@ -18,8 +18,39 @@
     <extensions defaultExtensionNs="com.intellij">
         <localInspection
                 implementationClass="konnekt.ClientFunOutsideInterfaceInspection"
-                displayName="clientFunOutsideInterfaceDiagnostic"
+                displayName="ClientFunOutsideInterfaceDiagnostic"
                 shortName="ClientFunOutsideInterfaceDiagnostic"
+                groupPath="konnekt.ClientInterface"
+                groupName="Konnekt"/>
+
+        <localInspection
+                implementationClass="konnekt.ClientFunWithoutClientAnnotationInspection"
+                displayName="ClientFunWithoutClientAnnotationDiagnostic"
+                groupPath="konnekt.ClientInterface"
+                groupName="Konnekt"/>
+
+        <localInspection
+                implementationClass="konnekt.ClientFunWithoutVerbAnnotationInspection"
+                displayName="Client fun without verb annotation"
+                groupPath="konnekt.ClientInterface"
+                groupName="Konnekt"/>
+
+        <localInspection
+                implementationClass="konnekt.ClientInterfaceWithSupertypeInspection"
+                displayName="Client interface with supertype diagnostic"
+                groupPath="konnekt.ClientInterface"
+                groupName="Konnekt"/>
+
+        <localInspection
+                implementationClass="konnekt.CompanionObjectInspection"
+                displayName="Companion object diagnostic"
+                groupPath="konnekt.CompanionObject"
+                groupName="CompanionObject"/>
+
+        <localInspection
+
+                implementationClass="konnekt.SuspendFunInspection"
+                displayName="Suspend fun diagnostic"
                 groupPath="konnekt.ClientInterface"
                 groupName="Konnekt"/>
     </extensions>
