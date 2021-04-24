@@ -13,45 +13,54 @@
     <depends>org.jetbrains.kotlin</depends>
     <depends>com.intellij.modules.java</depends>
 
-<!--    <depends>io.arrow-kt.arrow</depends>-->
-
     <extensions defaultExtensionNs="com.intellij">
         <localInspection
+                language="kotlin"
+                enabledByDefault="true"
                 implementationClass="konnekt.ClientFunOutsideInterfaceInspection"
                 displayName="ClientFunOutsideInterfaceDiagnostic"
                 shortName="ClientFunOutsideInterfaceDiagnostic"
-                groupPath="konnekt.ClientInterface"
+                groupPath="Konnekt.clientInterface"
                 groupName="Konnekt"/>
 
         <localInspection
+                language="kotlin"
+                enabledByDefault="true"
                 implementationClass="konnekt.ClientFunWithoutClientAnnotationInspection"
                 displayName="ClientFunWithoutClientAnnotationDiagnostic"
-                groupPath="konnekt.ClientInterface"
+                groupPath="Konnekt.clientInterface"
                 groupName="Konnekt"/>
 
         <localInspection
+                language="kotlin"
+                enabledByDefault="true"
                 implementationClass="konnekt.ClientFunWithoutVerbAnnotationInspection"
                 displayName="Client fun without verb annotation"
-                groupPath="konnekt.ClientInterface"
+                groupPath="Konnekt.clientInterface"
                 groupName="Konnekt"/>
 
         <localInspection
+                language="kotlin"
+                enabledByDefault="true"
                 implementationClass="konnekt.ClientInterfaceWithSupertypeInspection"
                 displayName="Client interface with supertype diagnostic"
-                groupPath="konnekt.ClientInterface"
+                groupPath="Konnekt.clientInterface"
                 groupName="Konnekt"/>
 
         <localInspection
+                language="kotlin"
+                enabledByDefault="true"
                 implementationClass="konnekt.CompanionObjectInspection"
                 displayName="Companion object diagnostic"
-                groupPath="konnekt.CompanionObject"
+                groupPath="Konnekt.companionObject"
                 groupName="CompanionObject"/>
 
         <localInspection
-
+                language="kotlin"
+                enabledByDefault="true"
                 implementationClass="konnekt.SuspendFunInspection"
                 displayName="Suspend fun diagnostic"
-                groupPath="konnekt.ClientInterface"
+                groupPath="Konnekt.clientInterface"
                 groupName="Konnekt"/>
     </extensions>
 
