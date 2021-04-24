@@ -7,30 +7,30 @@ import org.junit.Test
 
 private object Code {
   val before = """
-    |package test
-    |import konnekt.prelude.*
-    |
-    |interface Foo
-    |
-    |@Client
-    |interface Bar : F<caret>oo {
-    |
-    |   companion object
-    |}
-  """.trimMargin()
+     package test
+     import konnekt.prelude.*
+     
+     interface Foo
+     
+     @Client
+     interface Bar : F<caret>oo {
+     
+        companion object
+     }
+  """.trimIndent()
 
   val after = """
-    |package test
-    |import konnekt.prelude.*
-    |
-    |interface Foo
-    |
-    |@Client
-    |interface Bar {
-    |
-    |   companion object
-    |}
-  """.trimMargin()
+     package test
+     import konnekt.prelude.*
+     
+     interface Foo
+     
+     @Client
+     interface Bar {
+     
+        companion object
+     }
+  """.trimIndent()
 }
 
 class ClientInterfaceWithSupertypeDiagnosticTest1 : LightPlatformCodeInsightFixture4TestCase() {

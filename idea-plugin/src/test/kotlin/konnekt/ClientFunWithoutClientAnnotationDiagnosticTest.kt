@@ -9,29 +9,29 @@ class ClientFunWithoutClientAnnotationDiagnosticTest1 : LightPlatformCodeInsight
 
   private object InsideInterface {
     val before = """
-      |package test
-      |
-      |import konnekt.prelude.*
-      |
-      |interface Foo {
-      |
-      |   @GET("/foo")
-      |   suspend fun b<caret>ar(): String
-      |}
-    """.trimMargin()
+       package test
+       
+       import konnekt.prelude.*
+       
+       interface Foo {
+       
+          @GET("/foo")
+          suspend fun b<caret>ar(): String
+       }
+    """.trimIndent()
 
     val after = """
-      |package test
-      |
-      |import konnekt.prelude.*
-      |
-      |@konnekt.prelude.Client
-      |interface Foo {
-      |
-      |   @GET("/foo")
-      |   suspend fun bar(): String
-      |}
-    """.trimMargin()
+       package test
+       
+       import konnekt.prelude.*
+       
+       @konnekt.prelude.Client
+       interface Foo {
+       
+          @GET("/foo")
+          suspend fun bar(): String
+       }
+    """.trimIndent()
   }
 
   @Test

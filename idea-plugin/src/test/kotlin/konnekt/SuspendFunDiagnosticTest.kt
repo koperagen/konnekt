@@ -8,29 +8,29 @@ import org.junit.Test
 class SuspendFunDiagnosticTest1 : LightPlatformCodeInsightFixture4TestCase() {
   private object Code {
     val before = """
-    |package test
-    |import konnekt.prelude.*
-    |
-    |@Client
-    |interface Foo {
-    |   @GET
-    |   fun b<caret>ar()
-    |   
-    |   companion object
-    |}
+     package test
+     import konnekt.prelude.*
+     
+     @Client
+     interface Foo {
+        @GET("/foo")
+        fun b<caret>ar()
+        
+        companion object
+     }
     """.trimMargin()
 
     val after = """
-    |package test
-    |import konnekt.prelude.*
-    |
-    |@Client
-    |interface Foo {
-    |   @GET
-    |   suspend fun bar()
-    |   
-    |   companion object
-    |}
+     package test
+     import konnekt.prelude.*
+     
+     @Client
+     interface Foo {
+        @GET("/foo")
+        suspend fun bar()
+        
+        companion object
+     }
     """.trimMargin()
   }
 

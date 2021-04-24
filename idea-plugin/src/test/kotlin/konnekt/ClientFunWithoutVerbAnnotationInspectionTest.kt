@@ -9,16 +9,16 @@ class ClientFunWithoutVerbAnnotationInspectionTest1 : LightPlatformCodeInsightFi
 
   private object Code {
     val before = """
-      |package test
-      |import konnekt.prelude.*
-      |
-      |@Client
-      |interface Foo {
-      |   suspend fun test()
-      |   
-      |   companion object
-      |}
-    """.trimMargin()
+       package test
+       import konnekt.prelude.*
+       
+       @Client
+       interface Foo {
+          suspend fun test()
+          
+          companion object
+       }
+    """.trimIndent()
   }
 
   @Test

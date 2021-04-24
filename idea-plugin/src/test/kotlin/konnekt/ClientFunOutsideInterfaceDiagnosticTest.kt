@@ -9,13 +9,13 @@ class ClientFunOutsideInterfaceDiagnosticTest : LightPlatformCodeInsightFixture4
 
   private object Code {
     val error = """
-      |package test
-      |
-      |import konnekt.prelude.*
-      |
-      |@GET("/bar")
-      |fun foo(): String = TODO()
-    """.trimMargin()
+      package test
+      
+      import konnekt.prelude.*
+      
+      @GET("/bar")
+      fun foo(): String = TODO()
+    """.trimIndent()
   }
 
   @Test
