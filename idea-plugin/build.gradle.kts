@@ -13,10 +13,10 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":compiler-plugin", configuration = "shadow"))
 //    implementation("io.arrow-kt:idea-plugin:1.4.10-SNAPSHOT") {
 //      exclude(group = "io.arrow-kt", module = "compiler-plugin")
 //    }
+    implementation(project(":prelude"))
     testImplementation("io.kotest:kotest-assertions-core:4.3.1")
 }
 

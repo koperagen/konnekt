@@ -3,6 +3,7 @@ package konnekt
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixture4TestCase
 import io.kotest.matchers.collections.shouldExist
+import konnekt.dependencies.notSuspended
 import org.junit.Test
 
 class SuspendFunDiagnosticTest1 : LightPlatformCodeInsightFixture4TestCase() {

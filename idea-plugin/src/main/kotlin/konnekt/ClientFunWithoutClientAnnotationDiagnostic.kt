@@ -2,11 +2,14 @@ package konnekt
 
 //import arrow.meta.ide.IdeMetaPlugin
 //import arrow.meta.ide.invoke
-import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import konnekt.dependencies.ClientDeclaration
+import konnekt.dependencies.fqEntry
+import konnekt.dependencies.hasVerbAnnotation
+import konnekt.dependencies.noClientAnnotation
 import org.jetbrains.kotlin.idea.inspections.AbstractApplicabilityBasedInspection
 import org.jetbrains.kotlin.idea.util.nameIdentifierTextRangeInThis
 import org.jetbrains.kotlin.psi.KtClass
@@ -80,4 +83,4 @@ class ClientFunWithoutClientAnnotationInspection : AbstractApplicabilityBasedIns
 
 }
 
-private fun KtClass.isKonnektClient() = isKonnektClient(this)
+private fun KtClass.isKonnektClient() = konnekt.dependencies.isKonnektClient(this)

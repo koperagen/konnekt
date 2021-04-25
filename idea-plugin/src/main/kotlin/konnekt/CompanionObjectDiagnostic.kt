@@ -3,11 +3,12 @@ package konnekt
 //import arrow.meta.ide.IdeMetaPlugin
 //import arrow.meta.ide.invoke
 //import arrow.meta.phases.analysis.companionObject
-import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import konnekt.dependencies.isKonnektClient
+import konnekt.dependencies.noCompanion
 import org.jetbrains.kotlin.idea.inspections.AbstractApplicabilityBasedInspection
 import org.jetbrains.kotlin.idea.util.nameIdentifierTextRangeInThis
 import org.jetbrains.kotlin.psi.KtClass

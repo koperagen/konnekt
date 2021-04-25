@@ -2,11 +2,13 @@ package konnekt
 
 //import arrow.meta.ide.IdeMetaPlugin
 //import arrow.meta.ide.invoke
-import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
+import konnekt.dependencies.hasVerbAnnotation
+import konnekt.dependencies.isKonnektClient
+import konnekt.dependencies.noVerb
 import org.jetbrains.kotlin.idea.inspections.AbstractKotlinInspection
 import org.jetbrains.kotlin.psi.namedFunctionVisitor
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
