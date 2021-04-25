@@ -57,15 +57,13 @@ Configured Gradle projects with some sample code available at [Playground reposi
 - [x] Generate sources for limited subset of annotations (basic GET, DELETE, POST etc)
 - [x] Gradle plugin to apply compiler plugin to project
 - [x] Implement FormUrlEncoded & Multipart
+- [ ] Configure Gradle projects to resolve generated code in IDEA via Gradle plugin
 - [ ] Resolve annotation & types via Typed Quotes
 - [ ] Add & test android build variants
-- [ ] Register IDE Plugins via MetaIde
 - [ ] Samples & docs
 - [ ] Investigate IR capabilities
 - [ ] Prototype compile-time verified converters
 
 ## Current limitations
-1. IDE support disabled
-> There is resolution of generated sources in Arrow Meta. Thus, once there are ways to bundle owns IDE plugins built with Arrow Meta, IDE support will be enabled
-2. JVM only
+1. JVM only
 > Codegen in Konnekt is implemented using Quote System of Arrow Meta. It only supports compilation to JVM target, but this limitation will be lifted sometime after Kotlin 1.5 release
