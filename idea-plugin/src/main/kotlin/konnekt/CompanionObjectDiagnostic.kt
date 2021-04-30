@@ -13,7 +13,8 @@ import org.jetbrains.kotlin.psi.KtPsiFactory
 
 class CompanionObjectInspection : AbstractApplicabilityBasedInspection<KtClass>(KtClass::class.java) {
   override val defaultFixText: String = "Add companion object"
-  override fun getStaticDescription(): String = "Companion object inspection"
+  override fun getStaticDescription(): String = "Reports absence of `companion object` in interface annotated with @Client. " +
+      "Companion object in necessary because generated factory method is extension function with companion as receiver."
 
   override fun inspectionHighlightType(element: KtClass): ProblemHighlightType {
     return ProblemHighlightType.ERROR

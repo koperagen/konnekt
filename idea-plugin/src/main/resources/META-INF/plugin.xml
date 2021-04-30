@@ -15,6 +15,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <localInspection
+                hasStaticDescription="true"
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.ClientFunOutsideInterfaceInspection"
@@ -24,6 +25,7 @@
                 groupName="Probable bugs"/>
 
         <localInspection
+                hasStaticDescription="true"
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.ClientFunWithoutClientAnnotationInspection"
@@ -32,6 +34,7 @@
                 groupName="Probable bugs"/>
 
         <localInspection
+                hasStaticDescription="true"
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.ClientFunWithoutVerbAnnotationInspection"
@@ -40,6 +43,7 @@
                 groupName="Syntax issues"/>
 
         <localInspection
+                hasStaticDescription="true"
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.ClientInterfaceWithSupertypeInspection"
@@ -48,6 +52,7 @@
                 groupName="Syntax issues"/>
 
         <localInspection
+                hasStaticDescription="true"
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.CompanionObjectInspection"
@@ -56,6 +61,7 @@
                 groupName="Syntax issues"/>
 
         <localInspection
+                hasStaticDescription="true"
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.SuspendFunInspection"
