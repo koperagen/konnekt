@@ -20,48 +20,48 @@
                 implementationClass="konnekt.ClientFunOutsideInterfaceInspection"
                 displayName="ClientFunOutsideInterfaceDiagnostic"
                 shortName="ClientFunOutsideInterfaceDiagnostic"
-                groupPath="Konnekt.clientInterface"
-                groupName="Konnekt"/>
+                groupPath="Konnekt"
+                groupName="Probable bugs"/>
 
         <localInspection
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.ClientFunWithoutClientAnnotationInspection"
                 displayName="ClientFunWithoutClientAnnotationDiagnostic"
-                groupPath="Konnekt.clientInterface"
-                groupName="Konnekt"/>
+                groupPath="Konnekt"
+                groupName="Probable bugs"/>
 
         <localInspection
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.ClientFunWithoutVerbAnnotationInspection"
                 displayName="Client fun without verb annotation"
-                groupPath="Konnekt.clientInterface"
-                groupName="Konnekt"/>
+                groupPath="Konnekt"
+                groupName="Syntax issues"/>
 
         <localInspection
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.ClientInterfaceWithSupertypeInspection"
                 displayName="Client interface with supertype diagnostic"
-                groupPath="Konnekt.clientInterface"
-                groupName="Konnekt"/>
+                groupPath="Konnekt"
+                groupName="Syntax issues"/>
 
         <localInspection
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.CompanionObjectInspection"
                 displayName="Companion object diagnostic"
-                groupPath="Konnekt.companionObject"
-                groupName="CompanionObject"/>
+                groupPath="Konnekt"
+                groupName="Syntax issues"/>
 
         <localInspection
                 language="kotlin"
                 enabledByDefault="true"
                 implementationClass="konnekt.SuspendFunInspection"
                 displayName="Suspend fun diagnostic"
-                groupPath="Konnekt.clientInterface"
-                groupName="Konnekt"/>
+                groupPath="Konnekt"
+                groupName="Syntax issues"/>
     </extensions>
 
 </idea-plugin>
