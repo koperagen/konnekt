@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClass
 class SuspendFunInspection : AbstractApplicabilityBasedInspection<KtNamedFunction>(KtNamedFunction::class.java) {
   override val defaultFixText: String = "Make suspend"
   override fun getStaticDescription(): String  = "Function should be suspend"
-  override fun fixText(element: KtNamedFunction): String = "Make suspend"
 
   override fun inspectionHighlightType(element: KtNamedFunction): ProblemHighlightType {
     return ProblemHighlightType.ERROR

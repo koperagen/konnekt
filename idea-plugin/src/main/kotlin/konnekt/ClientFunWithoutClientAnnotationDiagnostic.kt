@@ -18,7 +18,6 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClass
 class ClientFunWithoutClientAnnotationInspection : AbstractApplicabilityBasedInspection<KtNamedFunction>(KtNamedFunction::class.java) {
   override val defaultFixText: String = "Annotate interface with ${ClientDeclaration.fqEntry}}"
   override fun getStaticDescription(): String = "Client fun without ${ClientDeclaration.fqEntry}}"
-  override fun fixText(element: KtNamedFunction): String = "Annotate interface with ${ClientDeclaration.fqEntry}}"
 
   override fun inspectionHighlightRangeInElement(element: KtNamedFunction): TextRange? {
     return element.nameIdentifierTextRangeInThis()

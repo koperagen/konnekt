@@ -12,9 +12,8 @@ import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtPsiFactory
 
 class CompanionObjectInspection : AbstractApplicabilityBasedInspection<KtClass>(KtClass::class.java) {
-  override val defaultFixText: String = "Companion object"
+  override val defaultFixText: String = "Add companion object"
   override fun getStaticDescription(): String = "Companion object inspection"
-  override fun fixText(element: KtClass): String = "Add companion object"
 
   override fun inspectionHighlightType(element: KtClass): ProblemHighlightType {
     return ProblemHighlightType.ERROR

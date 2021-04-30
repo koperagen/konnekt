@@ -13,7 +13,6 @@ import org.jetbrains.kotlin.psi.KtClass
 class ClientInterfaceWithSupertypeInspection : AbstractApplicabilityBasedInspection<KtClass>(KtClass::class.java) {
   override val defaultFixText: String = "Remove supertypes"
   override fun getStaticDescription(): String = "Super types inspection"
-  override fun fixText(element: KtClass): String  = "Remove supertypes"
 
   override fun inspectionHighlightType(element: KtClass): ProblemHighlightType {
     return ProblemHighlightType.ERROR
