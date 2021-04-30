@@ -1,5 +1,6 @@
 plugins {
   kotlin("multiplatform")
+  id("org.jetbrains.dokka") version "1.4.10"
   `maven-publish`
 }
 
@@ -7,8 +8,6 @@ repositories {
   mavenCentral()
   jcenter()
 }
-
-val KTOR_VERSION: String by project
 
 publishing {
   val username by lazy { System.getenv("KONNEKT_MAVEN_USERNAME") }
@@ -35,9 +34,10 @@ kotlin {
   }
   linuxX64()
   mingwX64()
-  mingwX86()
 
   sourceSets {
+
+    val KTOR_VERSION: String by project
 
     val commonMain by getting {
       dependencies {
