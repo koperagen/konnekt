@@ -71,9 +71,9 @@ val Meta.konnektPlugin: CliPlugin
                |import $declarationPath$name.*
                |
                |operator fun $name.Companion.invoke(client: HttpClient): $name {
-               |  return object : $name {
-               |    $implementation
-               |  }
+               |    return object : $name {
+               |        $implementation
+               |    }
                |}
                |""".trimMargin().file("$name\$Implementation")
         )
@@ -146,9 +146,9 @@ fun Request.body() = when (this) {
 
     """
     |body = MultiPartFormDataContent(
-    |  formData {
-    |    $`parts`
-    |  }
+    |   formData {
+    |       $`parts`
+    |   }
     |)""".trimMargin()
   }
   is FormUrlEncodedRequest -> {
