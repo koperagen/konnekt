@@ -10,6 +10,7 @@ val KOTLIN_TEST_VERSION: String by project
 val KOTLIN_VERSION: String by project
 val OPENAPI_VERSION: String by project
 val KTOR_VERSION: String by project
+val ARROW_META_VERSION: String by project
 
 repositories {
   mavenCentral()
@@ -24,8 +25,8 @@ dependencies {
   compileOnly(project(":prelude"))
   compileOnly(kotlin("stdlib-jdk8"))
   compileOnly("com.intellij:openapi:$OPENAPI_VERSION")
-  compileOnly("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.4.10")
-  compileOnly("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
+  compileOnly("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.5.0")
+  compileOnly("io.arrow-kt:compiler-plugin-core:$ARROW_META_VERSION")
   compileOnly("org.jetbrains.kotlin:kotlin-script-util:$KOTLIN_VERSION") {
       exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
       exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler")
@@ -33,8 +34,8 @@ dependencies {
   }
 
   testImplementation(project(":prelude"))
-  testImplementation("io.arrow-kt:compiler-plugin:1.4.10-SNAPSHOT")
-  testImplementation("io.arrow-kt:meta-test:1.4.10-SNAPSHOT")
+  testImplementation("io.arrow-kt:compiler-plugin-core:$ARROW_META_VERSION")
+  testImplementation("io.arrow-kt:meta-test:$ARROW_META_VERSION")
 
   testImplementation("junit:junit:4.13") // only for SampleTest
   testImplementation("io.kotest:kotest-framework-api:4.3.1")
@@ -44,7 +45,7 @@ dependencies {
   // Required for integration test of plugin
   testImplementation("io.ktor:ktor-client-mock:$KTOR_VERSION")
   testImplementation("io.ktor:ktor-client-mock-jvm:$KTOR_VERSION")
-  testImplementation("io.arrow-kt:arrow-meta-prelude:1.4.10-SNAPSHOT")
+  testImplementation("io.arrow-kt:arrow-meta-prelude:$ARROW_META_VERSION")
   testImplementation("io.ktor:ktor-client-core:$KTOR_VERSION")
   testImplementation("io.ktor:ktor-http:$KTOR_VERSION")
   testImplementation("io.ktor:ktor-client-core-jvm:$KTOR_VERSION")
@@ -72,7 +73,7 @@ val createNewPlugin = tasks.create<Jar>("createNewPlugin") {
     )
     from(
         zipTree(sourceSets.main.get().compileClasspath.find {
-            it.absolutePath.contains(Paths.get("arrow-kt", "compiler-plugin").toString())
+            it.absolutePath.contains(Paths.get("arrow-kt", "compiler-plugin-core").toString())
         }!!)
     ) {
         exclude("META-INF/services/org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar")

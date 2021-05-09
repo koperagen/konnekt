@@ -29,7 +29,7 @@ kotlin.target {
   compilations.all {
     kotlinOptions {
       freeCompilerArgs = listOf(
-          "-Xplugin=${rootDir}/compiler-plugin/build/libs/konnekt-plugin-1.4.10-SNAPSHOT.jar"
+          "-Xplugin=${rootDir}/compiler-plugin/build/libs/konnekt-plugin-$version.jar"
       )
     }
   }

@@ -6,6 +6,7 @@ import arrow.meta.invoke
 import arrow.meta.phases.CompilerContext
 import arrow.meta.quotes.ScopedList
 import arrow.meta.quotes.Transform
+import arrow.meta.quotes.TypedQuoteTemplate
 import arrow.meta.quotes.classDeclaration
 import arrow.meta.quotes.nameddeclaration.stub.typeparameterlistowner.NamedFunction
 import konnekt.annotationParsing.headers
@@ -13,6 +14,7 @@ import konnekt.annotationParsing.mimeEncoding
 import konnekt.annotationParsing.parameters
 import konnekt.annotationParsing.verbs
 import org.jetbrains.kotlin.cli.common.toLogger
+import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtAnnotated
 import org.jetbrains.kotlin.psi.KtClass
@@ -26,7 +28,8 @@ class KonnektPlugin : Meta {
 val Meta.konnektPlugin: CliPlugin
   get() = "Konnekt Plugin" {
     meta(
-      classDeclaration(ctx, ::isKonnektClient) { c ->
+      classDeclaration(ctx, TypedQuoteTemplate<KtClass, ClassDescriptor>::isKonnektClient) {
+        val c = it.element
         if (c.companionObjects.isEmpty()) {
           knownError(c.nameAsSafeName.asString().noCompanion, c)
           return@classDeclaration Transform.empty
@@ -80,6 +83,11 @@ val Meta.konnektPlugin: CliPlugin
       }
     )
   }
+
+fun TypedQuoteTemplate<KtClass, ClassDescriptor>.isKonnektClient(): Boolean {
+  val ktClass = this.element
+  return konnekt.isKonnektClient(ktClass)
+}
 
 fun isKonnektClient(ktClass: KtClass): Boolean = ktClass.isInterface() && ktClass.hasAnnotation(*CLIENT_ANNOTATION_NAMES.toTypedArray())
 
