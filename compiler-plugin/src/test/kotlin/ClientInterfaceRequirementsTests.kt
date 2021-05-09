@@ -6,6 +6,7 @@ import konnekt.notSuspended
 import konnekt.requiredEncoding
 import konnekt.severalBodyParameters
 import konnekt.superTypesNotAllowed
+import konnekt.typeParametersNotAllowed
 
 class ClientInterfaceRequirementsTests : DescribeSpec({
 
@@ -37,6 +38,19 @@ class ClientInterfaceRequirementsTests : DescribeSpec({
         |   companion object
         |}
         |""".trimMargin()
+    }
+
+    it("must have no type parameters", expectOn = { failsWith { it.contains("Test".typeParametersNotAllowed) } }) {
+      """
+        //metadebug
+        $imports
+        
+        @Client
+        interface Test<T> {
+            companion object
+        }
+        
+      """.trimIndent()
     }
 
     context("method") {

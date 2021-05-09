@@ -61,6 +61,14 @@
                 groupName="Syntax issues"/>
 
         <localInspection
+                language="kotlin"
+                enabledByDefault="true"
+                implementationClass="konnekt.ClientInterfaceWithTypeParametersInspection"
+                displayName="Type parameters diagnostic"
+                groupPath="Konnekt"
+                groupName="Syntax issues"/>
+
+        <localInspection
                 hasStaticDescription="true"
                 language="kotlin"
                 enabledByDefault="true"

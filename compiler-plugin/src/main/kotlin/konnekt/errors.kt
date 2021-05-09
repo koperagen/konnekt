@@ -14,6 +14,9 @@ val String.notSuspended
 val String.superTypesNotAllowed
   get() = "${Client::class.java.simpleName} annotated interface $this must not have super types."
 
+val String.typeParametersNotAllowed
+  get() = "${Client::class.java.simpleName} annotated interface $this must not have type parameters."
+
 val String.noVerb
   get() = "Methods in @${Client::class.java.simpleName} interface $this should have verb annotation"
 

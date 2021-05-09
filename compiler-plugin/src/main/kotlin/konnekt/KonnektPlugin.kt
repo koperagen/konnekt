@@ -50,6 +50,11 @@ val Meta.konnektPlugin: CliPlugin
           return@classDeclaration Transform.empty
         }
 
+        if (c.typeParameters.isNotEmpty()) {
+          knownError(c.nameAsSafeName.asString().typeParametersNotAllowed)
+          return@classDeclaration Transform.empty
+        }
+
         val implementation = body.functions.value
             .mapNotNull { it.generateDefinition(ctx, NamedFunction(it, null)) }
             .takeIf { it.size == body.functions.value.size }
