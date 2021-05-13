@@ -26,7 +26,7 @@ dependencies {
   compileOnly(kotlin("stdlib-jdk8"))
   compileOnly("com.intellij:openapi:$OPENAPI_VERSION")
   compileOnly("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.5.0")
-  compileOnly("io.arrow-kt:compiler-plugin-core:$ARROW_META_VERSION")
+  compileOnly("io.arrow-kt:arrow-meta:$ARROW_META_VERSION")
   compileOnly("org.jetbrains.kotlin:kotlin-script-util:$KOTLIN_VERSION") {
       exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
       exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler")
@@ -34,7 +34,7 @@ dependencies {
   }
 
   testImplementation(project(":prelude"))
-  testImplementation("io.arrow-kt:compiler-plugin-core:$ARROW_META_VERSION")
+  testImplementation("io.arrow-kt:arrow-meta:$ARROW_META_VERSION")
   testImplementation("io.arrow-kt:meta-test:$ARROW_META_VERSION")
 
   testImplementation("junit:junit:4.13") // only for SampleTest
@@ -73,7 +73,7 @@ val createNewPlugin = tasks.create<Jar>("createNewPlugin") {
     )
     from(
         zipTree(sourceSets.main.get().compileClasspath.find {
-            it.absolutePath.contains(Paths.get("arrow-kt", "compiler-plugin-core").toString())
+            it.absolutePath.contains(Paths.get("arrow-kt", "arrow-meta").toString())
         }!!)
     ) {
         exclude("META-INF/services/org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar")
