@@ -76,6 +76,14 @@
                 displayName="Suspend fun diagnostic"
                 groupPath="Konnekt"
                 groupName="Syntax issues"/>
+
+        <localInspection
+                language="kotlin"
+                enabledByDefault="true"
+                implementationClass="konnekt.FunctionArgumentWithoutVariableTypeAnnotation"
+                displayName="Function argument without variable type annotation fun diagnostic"
+                groupPath="Konnekt"
+                groupName="Syntax issues"/>
     </extensions>
 
 </idea-plugin>
