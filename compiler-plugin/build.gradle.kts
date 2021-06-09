@@ -37,7 +37,6 @@ dependencies {
   testImplementation("io.arrow-kt:arrow-meta:$ARROW_META_VERSION")
   testImplementation("io.arrow-kt:meta-test:$ARROW_META_VERSION")
 
-  testImplementation("junit:junit:4.13") // only for SampleTest
   testImplementation("io.kotest:kotest-framework-api:4.3.1")
   testImplementation("io.kotest:kotest-property:4.3.1")
   testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.1")
