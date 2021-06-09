@@ -98,19 +98,23 @@ class CodegenTest : FreeSpec({
   "integration tests" - {
 
     "sources test" {
-      assertThis(CompilerTest(
-          config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
-          code = { code.source },
-          assert = {
-            allOf(
-                "query_test()".source.evalsTo(Unit),
-                "body_test()".source.evalsTo(Unit),
-                "path_test()".source.evalsTo(Unit),
-                "header_test()".source.evalsTo(Unit),
-                "field_test()".source.evalsTo(Unit)
-            )
-          }
-      ))
+      try {
+        assertThis(CompilerTest(
+            config = { listOf(addMetaPlugins(KonnektPlugin()), ktorDependencies) },
+            code = { code.source },
+            assert = {
+              allOf(
+                  "query_test()".source.evalsTo(""),
+                  "body_test()".source.evalsTo(""),
+                  "path_test()".source.evalsTo(""),
+                  "header_test()".source.evalsTo(""),
+                  "field_test()".source.evalsTo("")
+              )
+            }
+        ))
+      } catch (e: InvocationTargetException) {
+        throw e.cause!!
+      }
     }
 
     "simple test" - {

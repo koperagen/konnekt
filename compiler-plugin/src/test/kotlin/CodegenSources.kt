@@ -39,6 +39,7 @@ val code = """
   import konnekt.prelude.Header
   import konnekt.prelude.Path
   import konnekt.prelude.Query
+  import konnekt.prelude.FormUrlEncoded
   import kotlinx.coroutines.runBlocking
 
   //metadebug
@@ -57,6 +58,7 @@ val code = """
     @GET("/header")
     suspend fun header(@Header("p") h: Int): String
 
+    @FormUrlEncoded()
     @GET("/field")
     suspend fun field(@Field("p") f: Int): String
 
@@ -77,6 +79,10 @@ val code = """
           "/header" -> {
             //println(it.headers)
             //assert(it.headers.contains("p", "1"))
+            respondOk() 
+          }
+          "/field" -> {
+            assert(it.body.toByteArray().decodeToString() == "p=1")
             respondOk()
           }
           else -> error("${'$'}path not handled")
